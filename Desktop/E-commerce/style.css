@@ -87,6 +87,19 @@ li {
     text-decoration: none;
 }
 
+.btn__menu {
+    background-color: transparent;
+    font-size: 40px;
+    text-align: center;
+    border: none;
+}
+
+/*
+
+LANDING
+
+*/
+
 #landing {
     background-color: rgba(115, 66, 214, 0.1)
 }
