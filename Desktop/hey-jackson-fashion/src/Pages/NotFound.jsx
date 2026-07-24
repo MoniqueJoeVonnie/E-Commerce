@@ -4,10 +4,17 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "../styles/NotFound.css";
 import { motion } from "framer-motion";
+import PageMeta from "../components/PageMeta";
+
+
 
 function NotFound() {
   return (
     <>
+        <PageMeta
+      title="Page Not Found | Hey Jackson! Fashion"
+      description="The page you requested could not be found. Return to Hey Jackson! Fashion or continue shopping."
+    />
       <Navbar />
 
       <main className="not-found-page">

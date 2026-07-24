@@ -7,23 +7,28 @@
   min-height: 100vh;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 60px 40px 80px;
-}
-
-.product-page h1 {
-  text-align: center;
-  color: #4b285f;
-  font-family: "Unica One", sans-serif;
-  font-size: 3.2rem;
-  letter-spacing: 2px;
-  margin-bottom: 20px;
+  padding: 100px 40px 80px;
 }
 
 .product-count {
+  margin: 22px 0 0;
+  color: #7a727a;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.product-page-hero {
+  max-width: 900px;
+  margin: 0 auto 90px;
   text-align: center;
-  color: #777;
-  font-size: 18px;
-  margin-bottom: 35px;
+}
+
+.product-page-hero .product-count {
+  margin: 22px 0 0;
+  color: #7a727a;
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .shop-product-card {
@@ -232,5 +237,36 @@
   100% {
     opacity: 0;
     transform: scale(1.45);
+  }
+}
+
+
+
+
+
+.category-hero {
+  max-width: 900px;
+  margin: 0 auto 90px;
+  text-align: center;
+}
+
+.category-count {
+  margin: 22px 0 0;
+
+  color: #7a727a;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+@media (max-width: 700px) {
+  .category-hero {
+    margin-bottom: 45px;
+  }
+
+  .category-count {
+    margin-top: 18px;
+    font-size: 0.92rem;
   }
 }

@@ -11,6 +11,9 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { products } from "../data/products";
 import "../styles/Search.css";
+import PageMeta from "../components/PageMeta";
+
+
 
 function Search() {
   const [searchParams, setSearchParams] =
@@ -148,6 +151,18 @@ function Search() {
 
   return (
     <>
+        <PageMeta
+          title={
+            searchTerm.trim()
+              ? `Search: ${searchTerm} | Hey Jackson! Fashion`
+              : "Search Products | Hey Jackson! Fashion"
+          }
+          description={
+            searchTerm.trim()
+              ? `View search results for ${searchTerm} at Hey Jackson! Fashion.`
+              : "Search Hey Jackson! Fashion for stylish pet clothing, harnesses, accessories, paw protectors, and more."
+          }
+        />
       <Navbar />
 
       <main className="search-page">

@@ -2,7 +2,10 @@ import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { products } from "../data/products";
 import Footer from "../components/Footer";
+import PageMeta from "../components/PageMeta";
 import "../styles/cart.css";
+
+
 
 function Cart() {
   const {
@@ -55,6 +58,11 @@ function Cart() {
 
   return (
     <>
+      <PageMeta
+        title="Shopping Cart | Hey Jackson! Fashion"
+        description="Review your selected Hey Jackson! Fashion products and proceed securely to checkout."
+      />
+
       <main className="cart-page">
         <h1>Your Cart</h1>
 

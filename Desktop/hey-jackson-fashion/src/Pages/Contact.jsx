@@ -12,6 +12,7 @@ import {
   ValidationError,
 } from "@formspree/react";
 import { FaCheckCircle } from "react-icons/fa";
+import PageMeta from "../components/PageMeta";
 
 
 
@@ -62,6 +63,10 @@ function handleSubmit(event) {
 
   return (
     <div className="contact-page">
+          <PageMeta
+      title="Contact Us | Hey Jackson! Fashion"
+      description="Contact Hey Jackson! Fashion with questions about products, sizing, orders, shipping, or returns."
+    />
       <Navbar />
 
       <main className="contact-main">

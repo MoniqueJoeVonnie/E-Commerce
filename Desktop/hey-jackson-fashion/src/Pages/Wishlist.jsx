@@ -3,10 +3,16 @@ import {
   FaHeart,
   FaRegTrashAlt,
 } from "react-icons/fa";
+
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import PageMeta from "../components/PageMeta";
+
 import { useWishlist } from "../context/WishlistContext";
+
 import "../styles/Wishlist.css";
+
+
 
 function Wishlist() {
   const {
@@ -17,17 +23,23 @@ function Wishlist() {
 
   return (
     <>
+        <PageMeta
+          title="Wishlist | Hey Jackson! Fashion"
+          description="View and manage the stylish Hey Jackson! Fashion products saved to your wishlist."
+        />
       <Navbar />
 
       <main className="wishlist-page">
         <section className="wishlist-hero">
-          <p className="wishlist-eyebrow">
+          <p className="page-eyebrow">
             YOUR FAVORITES
           </p>
 
-          <h1>Wishlist</h1>
+          <h1 className="page-title">
+            Wishlist
+          </h1>
 
-          <p className="wishlist-description">
+          <p className="page-description">
             Save the styles you love and return to them
             whenever you are ready.
           </p>
@@ -37,14 +49,16 @@ function Wishlist() {
           <section className="wishlist-content">
             <div className="wishlist-header">
               <div>
-                <p className="wishlist-count">
+                <p className="section-eyebrow">
                   {wishlistItems.length}{" "}
                   {wishlistItems.length === 1
                     ? "favorite"
                     : "favorites"}
                 </p>
 
-                <h2>Saved Products</h2>
+                <h2 className="section-title">
+                  Saved Products
+                </h2>
               </div>
 
               <button
@@ -132,11 +146,13 @@ function Wishlist() {
               <FaHeart />
             </div>
 
-            <p className="wishlist-empty-eyebrow">
+            <p className="page-eyebrow">
               NOTHING SAVED YET
             </p>
 
-            <h2>Your wishlist is waiting</h2>
+            <h2 className="section-title">
+              Your wishlist is waiting
+            </h2>
 
             <p>
               Tap the heart on any product you love and

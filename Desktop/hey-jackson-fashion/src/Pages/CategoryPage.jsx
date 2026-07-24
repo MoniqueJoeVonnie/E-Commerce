@@ -7,6 +7,9 @@ import { products } from "../data/products";
 import { useWishlist } from "../context/WishlistContext";
 import "../styles/ProductPage.css";
 import Footer from "../components/Footer";
+import PageMeta from "../components/PageMeta";
+
+
 
 function CategoryPage() {
   const { categoryName } = useParams();
@@ -27,30 +30,45 @@ function CategoryPage() {
   const pageTitle =
     categoryTitles[categoryName] || categoryName;
 
-  const filteredProducts = products.filter(
+  const products = products.filter(
     (product) =>
       product.category === categoryName
   );
 
   return (
     <>
+      <PageMeta
+        title={`${pageTitle} | Hey Jackson! Fashion`}
+        description={`Shop ${pageTitle.toLowerCase()} from Hey Jackson! Fashion and discover stylish products designed for fashionable pets.`}
+      />
       <main className="product-page">
         <Link to="/" className="back-link">
-          ← Back to Home
+      ← Back to Home
         </Link>
 
-        <h1>{pageTitle}</h1>
+        <section className="category-hero">
+          <p className="page-eyebrow">
+            CURATED COLLECTION
+          </p>
 
-        <p className="product-count">
-          {filteredProducts.length} product
-          {filteredProducts.length !== 1
-            ? "s"
-            : ""}{" "}
-          available
-        </p>
+          <h1 className="page-title">
+            {pageTitle}
+          </h1>
+
+          <p className="page-description">
+            Explore premium styles handpicked for fashionable pets.
+          </p>
+
+          <p className="category-count">
+            {products.length}{" "}
+            {products.length === 1
+              ? "product available"
+              : "products available"}
+          </p>
+      </section>
 
         <div className="product-grid">
-          {filteredProducts.map((product) => (
+          {products.map((product) => (
             <Link
               to={`/products/${product.id}`}
               className="shop-product-card"

@@ -23,6 +23,7 @@ import recentReelVideo from "../assets/Splash Page_Doggie Fashion Runway.mp4";
 import tiktokShowcaseVideo from "../assets/EatSleepPlayPoopRepeat_Finished.mp4";
 
 import "../App.css";
+import PageMeta from "../components/PageMeta";
 
 
 
@@ -74,6 +75,7 @@ function Home() {
       );
     };
   }, []);
+  
 
 
     const bestSellerSlides = [
@@ -128,9 +130,14 @@ function Home() {
   };
 
    return (
-    <>
-      <Navbar />
-      <Hero />
+  <>
+    <PageMeta
+      title="Hey Jackson! Fashion | Luxury Pet Apparel"
+      description="Shop stylish pet clothing, harnesses, paw protectors, accessories, and luxury pet fashion from Hey Jackson! Fashion."
+    />
+
+    <Navbar />
+    <Hero />
 
       <div
         className={`hero-scroll-indicator ${

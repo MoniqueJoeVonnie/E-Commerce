@@ -10,6 +10,8 @@ import CheckoutFooter from "../components/CheckoutFooter";
 
 import "../styles/Checkout.css";
 import "../styles/OrderConfirmation.css";
+import PageMeta from "../components/PageMeta";
+
 
 function OrderConfirmation() {
   const { orderId } = useParams();
@@ -38,6 +40,14 @@ function OrderConfirmation() {
       if (matchingOrder) {
         setOrder(matchingOrder);
         return;
+        <PageMeta
+          title={
+            order?.orderNumber
+              ? `Order Confirmed: ${order.orderNumber} | Hey Jackson! Fashion`
+              : "Order Confirmed | Hey Jackson! Fashion"
+          }
+          description="Your Hey Jackson! Fashion order has been confirmed. Review your order number, delivery estimate, payment method, and shipping information."
+        />
       }
 
       const latestOrder = JSON.parse(

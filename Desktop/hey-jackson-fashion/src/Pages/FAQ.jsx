@@ -4,6 +4,8 @@ import "../styles/FAQ.css";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaChevronDown } from "react-icons/fa";
+import PageMeta from "../components/PageMeta";
+
 
 const faqs = [
   {
@@ -74,6 +76,10 @@ function FAQ() {
 
   return (
     <>
+        <PageMeta
+      title="Contact Us | Hey Jackson! Fashion"
+      description="Contact Hey Jackson! Fashion with questions about products, sizing, orders, shipping, or returns."
+    />
       <Navbar />
 
       <main className="faq-page">

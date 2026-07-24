@@ -1,6 +1,9 @@
 import { Link, useParams } from "react-router-dom";
 import "../styles/OrderDetails.css";
 import Footer from "../components/Footer";
+import PageMeta from "../components/PageMeta";
+
+
 
 function OrderDetails() {
   const { orderId } = useParams();
@@ -309,8 +312,13 @@ function OrderDetails() {
   );
 
     return (
+      
     <>
       <Navbar />
+      <PageMeta
+        title={`Order ${order.orderNumber || order.id} | Hey Jackson! Fashion`}
+        description="Review the products, totals, shipping information, and payment details associated with your Hey Jackson! Fashion order."
+      />
 
       <main className="product-page">
         {/* existing product page content */}

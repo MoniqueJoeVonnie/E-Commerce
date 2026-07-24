@@ -8,6 +8,8 @@ import "../styles/ProductPage.css";
 import Footer from "../components/Footer";
 import { useWishlist } from "../context/WishlistContext";
 import FadeImage from "../components/FadeImage";
+import PageMeta from "../components/PageMeta";
+
 
 
 function ProductPage() {
@@ -18,13 +20,31 @@ function ProductPage() {
 
     return (
       <>
+      <PageMeta
+        title="Shop Products | Hey Jackson! Fashion"
+        description="Browse luxury pet clothing, harnesses, paw protectors, accessories, and fashionable essentials from Hey Jackson! Fashion."
+      />
         <main className="product-page">
-          <h1>Shop Products</h1>
+          <section className="category-hero">
+            <p className="page-eyebrow">
+              CURATED COLLECTION
+            </p>
 
-          <p className="product-count">
-            {products.length} product
-            {products.length !== 1 ? "s" : ""} available
-          </p>
+            <h1 className="page-title">
+              Shop Products
+            </h1>
+
+            <p className="page-description">
+              Explore premium styles handpicked for fashionable pets.
+            </p>
+
+            <p className="category-count">
+              {products.length}{" "}
+              {products.length === 1
+                ? "product available"
+                : "products available"}
+            </p>
+          </section>
 
           <div className="product-grid">
             {products.map((product) => (

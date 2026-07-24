@@ -17,6 +17,10 @@ import BackToTop from "./components/BackToTop";
 
 
 
+const Wishlist = lazy(() =>
+  import("./Pages/Wishlist")
+);
+
 const Home = lazy(() =>
   import("./Pages/Home")
 );
@@ -67,10 +71,6 @@ const FAQ = lazy(() =>
 
 const Search = lazy(() =>
   import("./Pages/Search")
-);
-
-const Wishlist = lazy(() =>
-  import("./pages/Wishlist")
 );
 
 const NotFound = lazy(() =>

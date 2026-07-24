@@ -1,3 +1,4 @@
+import React from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   FaHeart,
@@ -14,6 +15,7 @@ import { useCart } from "../context/CartContext";
 import MiniCart from "../components/MiniCart";
 import { useWishlist } from "../context/WishlistContext";
 import Footer from "../components/Footer";
+import PageMeta from "../components/PageMeta";
 
 
 function ProductDetail() {
@@ -202,6 +204,11 @@ function animateProductToCart() {
   if (!product) {
     return (
       <>
+        <PageMeta
+          title="Product Not Found | Hey Jackson! Fashion"
+          description="The requested product could not be found. Browse the Hey Jackson! Fashion collection for luxury pet apparel and accessories."
+        />
+
         <main className="product-detail-page">
           <h1>Product Not Found</h1>
 
@@ -253,12 +260,57 @@ function animateProductToCart() {
             )}
           </div>
 
-          <div className="product-detail-info">
+          <div className="product-detail-heading">
+            <p className="product-detail-eyebrow">
+              {categoryTitle}
+            </p>
+
             <h1>{product.name}</h1>
 
-            <h2>{product.price}</h2>
+            <div className="product-price-row">
+              <h2>{product.price}</h2>
 
-            <p>{product.description}</p>
+              <span className="product-stock-badge">
+                In Stock
+              </span>
+            </div>
+
+            <p className="product-detail-description">
+              {product.description}
+            </p>
+          </div>
+
+            <div
+          className="product-confidence-row"
+              aria-label="Shopping benefits"
+            >
+              <div className="product-confidence-item">
+                <span aria-hidden="true">🚚</span>
+
+                <div>
+                  <strong>Fast Shipping</strong>
+                  <small>Ships in 1–3 business days</small>
+                </div>
+              </div>
+
+              <div className="product-confidence-item">
+                <span aria-hidden="true">🔒</span>
+
+                <div>
+                  <strong>Secure Checkout</strong>
+                  <small>Encrypted payment experience</small>
+                </div>
+              </div>
+
+              <div className="product-confidence-item">
+                <span aria-hidden="true">✨</span>
+
+                <div>
+                  <strong>Premium Style</strong>
+                  <small>Designed for fashionable pets</small>
+                </div>
+              </div>
+            </div>
 
             {product.variants?.length >
               0 && (
@@ -370,7 +422,6 @@ function animateProductToCart() {
               </button>
             </div>
           </div>
-        </div>
 
         {product.details && (
           <section className="product-details-section">
@@ -455,7 +506,7 @@ function animateProductToCart() {
             </div>
           </section>
         )}
-      </main>
+        </main>
 
       <Footer />
 

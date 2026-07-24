@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import "../styles/Orders.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import PageMeta from "../components/PageMeta";
+
 
 function Orders() {
   let savedOrders = [];
@@ -23,6 +25,10 @@ function Orders() {
 
   return (
     <>
+        <PageMeta
+      title="My Orders | Hey Jackson! Fashion"
+      description="Review your recent Hey Jackson! Fashion purchases and order details."
+    />
       <Navbar />
 
       <div className="orders-page">

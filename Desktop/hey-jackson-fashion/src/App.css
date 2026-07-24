@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Unica+One&family=Poppins:wght@300;400;500;600;700&display=swap');
-@import url("https://fonts.googleapis.com/css2?family=Unica+One&display=swap");
+
 * {
   margin: 0;
   padding: 0;
@@ -1067,3 +1067,103 @@ backdrop-filter: blur(14px);
   }
 }
 
+/* =========================================
+   SHARED PAGE TYPOGRAPHY
+========================================= */
+
+.page-eyebrow {
+  margin: 0 0 18px;
+
+  color: #18a7aa;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.page-title {
+  margin: 0;
+
+  color: #4b285f;
+
+  font-family: "Unica One", sans-serif;
+  font-size: clamp(3.8rem, 7vw, 6.2rem);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.page-description {
+  max-width: 700px;
+  margin: 28px auto 0;
+
+  color: #686168;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 1.18rem;
+  font-weight: 400;
+  line-height: 1.9;
+}
+
+.section-eyebrow {
+  margin: 0 0 10px;
+
+  color: #ff4fa3;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.section-title {
+  margin: 0;
+
+  color: #4b285f;
+
+  font-family: "Unica One", sans-serif;
+  font-size: clamp(2.2rem, 4vw, 3.6rem);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.section-description {
+  max-width: 650px;
+  margin: 18px 0 0;
+
+  color: #686168;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+@media (max-width: 700px) {
+  .page-eyebrow {
+    font-size: 0.78rem;
+    letter-spacing: 0.25em;
+  }
+
+  .page-title {
+    font-size: clamp(3rem, 15vw, 4.6rem);
+    letter-spacing: 0.05em;
+  }
+
+  .page-description {
+    margin-top: 22px;
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 10vw, 3rem);
+  }
+}
