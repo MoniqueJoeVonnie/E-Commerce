@@ -251,15 +251,13 @@ function animateProductToCart() {
                 ref={productImageRef}
                 key={selectedImage}
                 src={selectedImage}
-                alt={
-                  selectedVariant?.name ||
-                  product.name
-                }
+                alt={selectedVariant?.name || product.name}
                 className="product-main-image"
               />
             )}
           </div>
 
+          <div className="product-detail-info">
           <div className="product-detail-heading">
             <p className="product-detail-eyebrow">
               {categoryTitle}
@@ -279,38 +277,7 @@ function animateProductToCart() {
               {product.description}
             </p>
           </div>
-
-            <div
-          className="product-confidence-row"
-              aria-label="Shopping benefits"
-            >
-              <div className="product-confidence-item">
-                <span aria-hidden="true">🚚</span>
-
-                <div>
-                  <strong>Fast Shipping</strong>
-                  <small>Ships in 1–3 business days</small>
-                </div>
-              </div>
-
-              <div className="product-confidence-item">
-                <span aria-hidden="true">🔒</span>
-
-                <div>
-                  <strong>Secure Checkout</strong>
-                  <small>Encrypted payment experience</small>
-                </div>
-              </div>
-
-              <div className="product-confidence-item">
-                <span aria-hidden="true">✨</span>
-
-                <div>
-                  <strong>Premium Style</strong>
-                  <small>Designed for fashionable pets</small>
-                </div>
-              </div>
-            </div>
+          
 
             {product.variants?.length >
               0 && (
@@ -423,47 +390,111 @@ function animateProductToCart() {
             </div>
           </div>
 
+                 <div
+          className="product-confidence-row"
+              aria-label="Shopping benefits"
+            >
+              <div className="product-confidence-item">
+                <span aria-hidden="true">🚚</span>
+
+                <div>
+                  <strong>Fast Shipping</strong>
+                  <small>Ships in 1–3 business days</small>
+                </div>
+              </div>
+
+              <div className="product-confidence-item">
+                <span aria-hidden="true">🔒</span>
+
+                <div>
+                  <strong>Secure Checkout</strong>
+                  <small>Encrypted payment experience</small>
+                </div>
+              </div>
+
+              <div className="product-confidence-item">
+                <span aria-hidden="true">✨</span>
+
+                <div>
+                  <strong>Premium Style</strong>
+                  <small>Designed for fashionable pets</small>
+                </div>
+              </div>
+            </div>
+            </div>
+
         {product.details && (
           <section className="product-details-section">
-            <h2>{product.name}</h2>
+            <div className="product-details-intro">
+              <p className="section-eyebrow">
+                THE DETAILS
+              </p>
 
-            <p>
-              {product.details.overview}
-            </p>
+              <h2 className="section-title">
+                Designed for Style and Comfort
+              </h2>
 
-            <hr />
+              <p className="product-details-overview">
+                {product.details.overview}
+              </p>
+            </div>
 
-            <h2>Why You'll Love It</h2>
+            <div className="product-details-grid">
+              <article className="product-detail-card">
+                <span className="product-detail-card-icon">
+                  ✨
+                </span>
 
-            <ul>
-              {product.details.features.map(
-                (feature, index) => (
-                  <li key={index}>
-                    {feature}
-                  </li>
-                )
-              )}
-            </ul>
+                <h3>Why You'll Love It</h3>
 
-            <hr />
+                <ul>
+                  {product.details.features.map(
+                    (feature, index) => (
+                      <li key={index}>
+                        {feature}
+                      </li>
+                    )
+                  )}
+                </ul>
+              </article>
 
-            <h2>Product Details</h2>
+              <article className="product-detail-card">
+                <span className="product-detail-card-icon">
+                  🐾
+                </span>
 
-            <ul>
-              {product.details.specifications.map(
-                (detail, index) => (
-                  <li key={index}>
-                    {detail}
-                  </li>
-                )
-              )}
-            </ul>
+                <h3>Product Details</h3>
+
+                <ul>
+                  {product.details.specifications.map(
+                    (detail, index) => (
+                      <li key={index}>
+                        {detail}
+                      </li>
+                    )
+                  )}
+                </ul>
+              </article>
+            </div>
           </section>
         )}
 
         {product.completeTheLook && (
           <section className="complete-look-section">
-            <h2>Complete the Look</h2>
+            <div className="complete-look-heading">
+              <p className="section-eyebrow">
+                STYLED TOGETHER
+              </p>
+
+              <h2 className="section-title">
+                Complete the Look
+              </h2>
+
+              <p className="complete-look-description">
+                Finish your pup&apos;s signature style with
+                these hand-selected favorites.
+              </p>
+            </div>
 
             <div className="complete-look-grid">
               {product.completeTheLook.map(
