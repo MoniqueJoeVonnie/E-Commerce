@@ -1,31 +1,42 @@
-import { Link, useSearchParams } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
+import {
+  Link,
+  useSearchParams,
+} from "react-router-dom";
+
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
 import {
   FaHeart,
   FaRegHeart,
   FaSearch,
   FaTimes,
 } from "react-icons/fa";
+
 import { useWishlist } from "../context/WishlistContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import PageMeta from "../components/PageMeta";
 import { products } from "../data/products";
 import "../styles/Search.css";
-import PageMeta from "../components/PageMeta";
-
-
 
 function Search() {
   const [searchParams, setSearchParams] =
     useSearchParams();
 
-  const urlQuery = searchParams.get("q") || "";
+  const urlQuery =
+    searchParams.get("q") || "";
 
   const [searchTerm, setSearchTerm] =
     useState(urlQuery);
 
-  const [selectedCategory, setSelectedCategory] =
-    useState("all");
+  const [
+    selectedCategory,
+    setSelectedCategory,
+  ] = useState("all");
 
   const [sortOption, setSortOption] =
     useState("featured");
@@ -33,7 +44,7 @@ function Search() {
   const {
     toggleWishlist,
     isInWishlist,
-  } = useWishlist();  
+  } = useWishlist();
 
   useEffect(() => {
     setSearchTerm(urlQuery);
@@ -44,86 +55,106 @@ function Search() {
       .trim()
       .toLowerCase();
 
-    return products.filter((product) => {
-      const searchableText = [
-        product.name,
-        product.title,
-        product.category,
-        product.description,
-        ...(product.colors || []),
-        ...(product.sizes || []),
-        ...(product.keywords || []),
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
+    const matchingProducts =
+      products.filter((product) => {
+        const searchableText = [
+          product.name,
+          product.title,
+          product.category,
+          product.description,
+          ...(product.colors || []),
+          ...(product.sizes || []),
+          ...(product.keywords || []),
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
 
-      const matchesSearch =
-        !normalizedSearch ||
-        searchableText.includes(normalizedSearch);
+        const matchesSearch =
+          !normalizedSearch ||
+          searchableText.includes(
+            normalizedSearch
+          );
 
-      const matchesCategory =
-        selectedCategory === "all" ||
-        product.category?.toLowerCase() ===
-          selectedCategory;
+        const matchesCategory =
+          selectedCategory === "all" ||
+          product.category?.toLowerCase() ===
+            selectedCategory;
 
-      return matchesSearch && matchesCategory;
-    });
-  }, [searchTerm, selectedCategory]);
+        return (
+          matchesSearch &&
+          matchesCategory
+        );
+      });
 
-  const sortedProducts = useMemo(() => {
-    const productsToSort = [...filteredProducts];
+    const sortedProducts = [
+      ...matchingProducts,
+    ];
 
     function getProductPrice(product) {
-      if (typeof product.price === "number") {
-        return product.price;
-      }
+      const numericPrice = parseFloat(
+        String(product.price).replace(
+          /[^0-9.]/g,
+          ""
+        )
+      );
 
-      return (
-        Number(
-          String(product.price)
-            .replace("$", "")
-            .replace(",", "")
-        ) || 0
+      return Number.isNaN(numericPrice)
+        ? 0
+        : numericPrice;
+    }
+
+    if (sortOption === "price-low") {
+      sortedProducts.sort(
+        (
+          firstProduct,
+          secondProduct
+        ) =>
+          getProductPrice(firstProduct) -
+          getProductPrice(secondProduct)
       );
     }
 
-    function getProductName(product) {
-      return (
-        product.name ||
-        product.title ||
-        ""
-      ).toLowerCase();
+    if (sortOption === "price-high") {
+      sortedProducts.sort(
+        (
+          firstProduct,
+          secondProduct
+        ) =>
+          getProductPrice(secondProduct) -
+          getProductPrice(firstProduct)
+      );
     }
 
-    switch (sortOption) {
-      case "price-low-high":
-        return productsToSort.sort(
-          (firstProduct, secondProduct) =>
-            getProductPrice(firstProduct) -
-            getProductPrice(secondProduct)
-        );
+    if (sortOption === "name") {
+      sortedProducts.sort(
+        (
+          firstProduct,
+          secondProduct
+        ) => {
+          const firstName =
+            firstProduct.name ||
+            firstProduct.title ||
+            "";
 
-      case "price-high-low":
-        return productsToSort.sort(
-          (firstProduct, secondProduct) =>
-            getProductPrice(secondProduct) -
-            getProductPrice(firstProduct)
-        );
+          const secondName =
+            secondProduct.name ||
+            secondProduct.title ||
+            "";
 
-      case "name-a-z":
-        return productsToSort.sort(
-          (firstProduct, secondProduct) =>
-            getProductName(firstProduct).localeCompare(
-              getProductName(secondProduct)
-            )
-        );
-
-      case "featured":
-      default:
-        return productsToSort;
+          return firstName.localeCompare(
+            secondName
+          );
+        }
+      );
     }
-  }, [filteredProducts, sortOption]);
+
+    return sortedProducts;
+  }, [
+    searchTerm,
+    selectedCategory,
+    sortOption,
+  ]);
 
   function handleSearchChange(event) {
     const value = event.target.value;
@@ -131,7 +162,9 @@ function Search() {
     setSearchTerm(value);
 
     if (value.trim()) {
-      setSearchParams({ q: value });
+      setSearchParams({
+        q: value,
+      });
     } else {
       setSearchParams({});
     }
@@ -151,18 +184,19 @@ function Search() {
 
   return (
     <>
-        <PageMeta
-          title={
-            searchTerm.trim()
-              ? `Search: ${searchTerm} | Hey Jackson! Fashion`
-              : "Search Products | Hey Jackson! Fashion"
-          }
-          description={
-            searchTerm.trim()
-              ? `View search results for ${searchTerm} at Hey Jackson! Fashion.`
-              : "Search Hey Jackson! Fashion for stylish pet clothing, harnesses, accessories, paw protectors, and more."
-          }
-        />
+      <PageMeta
+        title={
+          searchTerm.trim()
+            ? `Search: ${searchTerm} | Hey Jackson! Fashion`
+            : "Search Products | Hey Jackson! Fashion"
+        }
+        description={
+          searchTerm.trim()
+            ? `View search results for ${searchTerm} at Hey Jackson! Fashion.`
+            : "Search Hey Jackson! Fashion for stylish pet clothing, harnesses, accessories, paw protectors, and more."
+        }
+      />
+
       <Navbar />
 
       <main className="search-page">
@@ -174,12 +208,15 @@ function Search() {
           <h1>Search Products</h1>
 
           <p className="search-description">
-            Search our collection of stylish clothing,
-            accessories, harnesses, and paw protectors.
+            Search our collection of stylish
+            clothing, accessories, harnesses,
+            and paw protectors.
           </p>
 
           <div className="search-input-wrapper">
-            <FaSearch className="search-input-icon" />
+            <FaSearch
+              className="search-input-icon"
+            />
 
             <input
               type="search"
@@ -222,12 +259,15 @@ function Search() {
             <button
               type="button"
               className={
-                selectedCategory === "clothing"
+                selectedCategory ===
+                "clothing"
                   ? "filter-chip active"
                   : "filter-chip"
               }
               onClick={() =>
-                setSelectedCategory("clothing")
+                setSelectedCategory(
+                  "clothing"
+                )
               }
             >
               Clothing
@@ -236,12 +276,15 @@ function Search() {
             <button
               type="button"
               className={
-                selectedCategory === "harnesses"
+                selectedCategory ===
+                "harnesses"
                   ? "filter-chip active"
                   : "filter-chip"
               }
               onClick={() =>
-                setSelectedCategory("harnesses")
+                setSelectedCategory(
+                  "harnesses"
+                )
               }
             >
               Harnesses
@@ -250,12 +293,15 @@ function Search() {
             <button
               type="button"
               className={
-                selectedCategory === "shoes"
+                selectedCategory ===
+                "shoes"
                   ? "filter-chip active"
                   : "filter-chip"
               }
               onClick={() =>
-                setSelectedCategory("shoes")
+                setSelectedCategory(
+                  "shoes"
+                )
               }
             >
               Paw Protectors
@@ -264,12 +310,15 @@ function Search() {
             <button
               type="button"
               className={
-                selectedCategory === "accessories"
+                selectedCategory ===
+                "accessories"
                   ? "filter-chip active"
                   : "filter-chip"
               }
               onClick={() =>
-                setSelectedCategory("accessories")
+                setSelectedCategory(
+                  "accessories"
+                )
               }
             >
               Accessories
@@ -285,9 +334,11 @@ function Search() {
               <h2>
                 {searchTerm
                   ? `Results for “${searchTerm}”`
-                  : selectedCategory === "all"
+                  : selectedCategory ===
+                      "all"
                     ? "All Products"
-                    : selectedCategory === "shoes"
+                    : selectedCategory ===
+                        "shoes"
                       ? "Paw Protectors"
                       : selectedCategory}
               </h2>
@@ -295,111 +346,126 @@ function Search() {
 
             <div className="search-results-controls">
               <p className="search-result-count">
-                {sortedProducts.length}{" "}
-                {sortedProducts.length === 1
+                {filteredProducts.length}{" "}
+                {filteredProducts.length === 1
                   ? "product"
                   : "products"}
               </p>
 
-              <div className="search-sort-wrapper">
-                <label htmlFor="search-sort">
-                  Sort By
-                </label>
+              <label className="search-sort">
+                <span>Sort By</span>
 
                 <select
-                  id="search-sort"
                   value={sortOption}
                   onChange={(event) =>
-                    setSortOption(event.target.value)
+                    setSortOption(
+                      event.target.value
+                    )
                   }
+                  aria-label="Sort search results"
                 >
                   <option value="featured">
                     Featured
                   </option>
 
-                  <option value="price-low-high">
+                  <option value="price-low">
                     Price: Low to High
                   </option>
 
-                  <option value="price-high-low">
+                  <option value="price-high">
                     Price: High to Low
                   </option>
 
-                  <option value="name-a-z">
+                  <option value="name">
                     Name: A–Z
                   </option>
                 </select>
-              </div>
+              </label>
             </div>
           </div>
 
-          {sortedProducts.length > 0 ? (
+          {filteredProducts.length > 0 ? (
             <div className="search-product-grid">
-              {sortedProducts.map((product) => (
-                <Link
-                  to={`/products/${product.id}`}
-                  className="search-product-card"
-                  key={product.id}
-                >
-                  <div className="search-product-image-wrapper">
-                    <button
-                      type="button"
-                      className={
-                        isInWishlist(product.id)
-                          ? "search-wishlist-button active"
-                          : "search-wishlist-button"
-                      }
-                      onClick={(event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        toggleWishlist(product);
-                      }}
-                      aria-label={
-                        isInWishlist(product.id)
-                          ? `Remove ${
-                              product.name || product.title
-                            } from wishlist`
-                          : `Add ${
-                              product.name || product.title
-                            } to wishlist`
-                      }
-                      aria-pressed={isInWishlist(product.id)}
-                    >
-                      {isInWishlist(product.id) ? (
-                        <FaHeart />
-                      ) : (
-                        <FaRegHeart />
-                      )}
-                    </button>
+              {filteredProducts.map(
+                (product) => (
+                  <Link
+                    to={`/products/${product.id}`}
+                    className="search-product-card"
+                    key={product.id}
+                  >
+                    <div className="search-product-image-wrapper">
+                      <button
+                        type="button"
+                        className={
+                          isInWishlist(
+                            product.id
+                          )
+                            ? "search-wishlist-button active"
+                            : "search-wishlist-button"
+                        }
+                        onClick={(event) => {
+                          event.preventDefault();
+                          event.stopPropagation();
 
-                    <img
-                      src={
-                        product.image ||
-                        product.images?.[0]
-                      }
-                      alt={
-                        product.name ||
-                        product.title
-                      }
-                    />
-                  </div>
+                          toggleWishlist(
+                            product
+                          );
+                        }}
+                        aria-label={
+                          isInWishlist(
+                            product.id
+                          )
+                            ? `Remove ${
+                                product.name ||
+                                product.title
+                              } from wishlist`
+                            : `Add ${
+                                product.name ||
+                                product.title
+                              } to wishlist`
+                        }
+                        aria-pressed={isInWishlist(
+                          product.id
+                        )}
+                      >
+                        {isInWishlist(
+                          product.id
+                        ) ? (
+                          <FaHeart />
+                        ) : (
+                          <FaRegHeart />
+                        )}
+                      </button>
 
-                  <div className="search-product-info">
-                    <p className="search-product-category">
-                      {product.category}
-                    </p>
+                      <img
+                        src={
+                          product.image ||
+                          product.images?.[0]
+                        }
+                        alt={
+                          product.name ||
+                          product.title
+                        }
+                      />
+                    </div>
 
-                    <h3>
-                      {product.name ||
-                        product.title}
-                    </h3>
+                    <div className="search-product-info">
+                      <p className="search-product-category">
+                        {product.category}
+                      </p>
 
-                    <p className="search-product-price">
-                      {product.price}
-                    </p>
-                  </div>
-                </Link>
-              ))}
+                      <h3>
+                        {product.name ||
+                          product.title}
+                      </h3>
+
+                      <p className="search-product-price">
+                        {product.price}
+                      </p>
+                    </div>
+                  </Link>
+                )
+              )}
             </div>
           ) : (
             <div className="search-empty-state">
@@ -410,12 +476,13 @@ function Search() {
               <h2>No products found</h2>
 
               <p>
-                We couldn’t find anything matching
+                We couldn’t find anything
+                matching
                 {searchTerm
                   ? ` “${searchTerm}”.`
                   : " the selected category."}{" "}
-                Try a different product, color, size, or
-                category.
+                Try a different product,
+                color, size, or category.
               </p>
 
               <button

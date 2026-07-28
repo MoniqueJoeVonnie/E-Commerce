@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+} from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaPaw } from "react-icons/fa";
 import { HiArrowLongDown } from "react-icons/hi2";
@@ -7,6 +10,7 @@ import { HiArrowLongDown } from "react-icons/hi2";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import Footer from "../components/Footer";
+import PageMeta from "../components/PageMeta";
 
 import petBoots from "../assets/Pet boots.png";
 import petBowls from "../assets/Pet Bowls.png";
@@ -23,12 +27,6 @@ import recentReelVideo from "../assets/Splash Page_Doggie Fashion Runway.mp4";
 import tiktokShowcaseVideo from "../assets/EatSleepPlayPoopRepeat_Finished.mp4";
 
 import "../App.css";
-import PageMeta from "../components/PageMeta";
-
-
-
-
-
 
 function Home() {
   const [hideScrollGuide, setHideScrollGuide] =
@@ -75,10 +73,8 @@ function Home() {
       );
     };
   }, []);
-  
 
-
-    const bestSellerSlides = [
+  const bestSellerSlides = [
     sneakerCollection,
     sportyJersey,
     combo,
@@ -129,72 +125,75 @@ function Home() {
     },
   };
 
-   return (
-  <>
-    <PageMeta
-      title="Hey Jackson! Fashion | Luxury Pet Apparel"
-      description="Shop stylish pet clothing, harnesses, paw protectors, accessories, and luxury pet fashion from Hey Jackson! Fashion."
-    />
+  return (
+    <>
+      <PageMeta
+        title="Hey Jackson! Fashion | Luxury Pet Apparel"
+        description="Shop stylish pet clothing, harnesses, paw protectors, accessories, and luxury pet fashion from Hey Jackson! Fashion."
+      />
 
-    <Navbar />
-    <Hero />
+      <Navbar />
 
-      <div
-        className={`hero-scroll-indicator ${
-            hideScrollGuide ? "hidden" : ""
-        }`}
+      {/* One hero video with search and scroll controls */}
+      <div className="hero-area">
+        <Hero />
+
+        <form
+          className="search-section"
+          onSubmit={handleSearch}
         >
-        <button
+          <input
+            type="search"
+            className="homepage-search"
+            placeholder="Search products..."
+            value={searchTerm}
+            onChange={(event) =>
+              setSearchTerm(event.target.value)
+            }
+            aria-label="Search products"
+          />
+
+          <button
+            type="submit"
+            className="search-button"
+            aria-label="Submit product search"
+          >
+            <FaPaw />
+          </button>
+        </form>
+
+        <div
+          className={`hero-scroll-indicator ${
+            hideScrollGuide ? "hidden" : ""
+          }`}
+        >
+          <button
             type="button"
             className="hero-scroll-button"
             onClick={() =>
-                window.scrollTo({
+              window.scrollTo({
                 top: window.innerHeight,
                 behavior: "smooth",
-                })
+              })
             }
             aria-label="Scroll to explore"
-            >
+          >
             <HiArrowLongDown />
-        </button>
+          </button>
 
-        <span className="hero-scroll-text">
+          <span className="hero-scroll-text">
             <span className="explore-word">
-                Explore
+              Explore
             </span>
 
             <span className="discover-word">
-                Discover
+              Discover
             </span>
-        </span>
+          </span>
         </div>
+      </div>
 
-      <form
-        className="search-section"
-        onSubmit={handleSearch}
-      >
-        <input
-          type="search"
-          className="homepage-search"
-          placeholder="Search products..."
-          value={searchTerm}
-          onChange={(event) =>
-            setSearchTerm(event.target.value)
-          }
-          aria-label="Search products"
-        />
-
-        <button
-          type="submit"
-          className="search-button"
-          aria-label="Submit product search"
-        >
-          <FaPaw />
-        </button>
-      </form>
-
-      {/* Best Sellers */}
-
+      {/* Homepage content begins outside the hero */}
       <div className="page-background">
         <motion.section
           className="best-seller-carousel"
@@ -260,7 +259,9 @@ function Home() {
               <h3>Pet Clothing</h3>
 
               <Link to="/products/category/clothing">
-                <button>Shop Clothing</button>
+                <button type="button">
+                  Shop Clothing
+                </button>
               </Link>
             </motion.div>
 
@@ -276,7 +277,9 @@ function Home() {
               <h3>Paw Protectors</h3>
 
               <Link to="/products/category/shoes">
-                <button>Shop Shoes</button>
+                <button type="button">
+                  Shop Shoes
+                </button>
               </Link>
             </motion.div>
 
@@ -292,7 +295,9 @@ function Home() {
               <h3>Harnesses</h3>
 
               <Link to="/products/category/harnesses">
-                <button>Shop Harnesses</button>
+                <button type="button">
+                  Shop Harnesses
+                </button>
               </Link>
             </motion.div>
 
@@ -308,7 +313,9 @@ function Home() {
               <h3>Accessories</h3>
 
               <Link to="/products/category/accessories">
-                <button>Shop Accessories</button>
+                <button type="button">
+                  Shop Accessories
+                </button>
               </Link>
             </motion.div>
           </motion.div>
@@ -331,7 +338,9 @@ function Home() {
           <div className="why-grid">
             <div className="why-card">
               <div className="why-icon">🛡️</div>
+
               <h3>Secure Checkout</h3>
+
               <p>
                 Shop confidently with secure encrypted
                 checkout and trusted payment options.
@@ -340,7 +349,9 @@ function Home() {
 
             <div className="why-card">
               <div className="why-icon">💳</div>
+
               <h3>Pay in 4 With Shop Pay</h3>
+
               <p>
                 Split eligible purchases into convenient
                 payments through Shop Pay.
@@ -349,7 +360,9 @@ function Home() {
 
             <div className="why-card">
               <div className="why-icon">🚚</div>
+
               <h3>Fast U.S. Shipping</h3>
+
               <p>
                 Orders are processed quickly and shipped
                 from trusted U.S. partners.
@@ -358,7 +371,9 @@ function Home() {
 
             <div className="why-card">
               <div className="why-icon">❤️</div>
+
               <h3>Made With Love</h3>
+
               <p>
                 Every collection is selected with comfort,
                 quality, and style in mind.
@@ -384,20 +399,28 @@ function Home() {
           <div className="promo-grid">
             <div className="promo-card image-card">
               <h3>New Arrivals</h3>
+
               <img
                 src={petCarriers}
                 alt="New Arrivals"
               />
-              <button>Shop New</button>
+
+              <button type="button">
+                Shop New
+              </button>
             </div>
 
             <div className="promo-card image-card">
               <h3>New Combo Deals</h3>
+
               <img
                 src={newComboDeals}
                 alt="New Combo Deals"
               />
-              <button>Shop Combos</button>
+
+              <button type="button">
+                Shop Combos
+              </button>
             </div>
 
             <div className="promo-card video-card">
@@ -411,7 +434,9 @@ function Home() {
                 playsInline
               />
 
-              <button>Watch Reels</button>
+              <button type="button">
+                Watch Reels
+              </button>
             </div>
 
             <div className="promo-card video-card">
@@ -426,7 +451,9 @@ function Home() {
                 playsInline
               />
 
-              <button>Watch TikTok</button>
+              <button type="button">
+                Watch TikTok
+              </button>
             </div>
           </div>
         </motion.section>
@@ -455,9 +482,12 @@ function Home() {
             <input
               type="email"
               placeholder="Enter your email"
+              aria-label="Email address"
             />
 
-            <button>Join Now</button>
+            <button type="button">
+              Join Now
+            </button>
           </div>
         </motion.section>
       </div>

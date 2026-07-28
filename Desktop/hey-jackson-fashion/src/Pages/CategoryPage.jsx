@@ -30,10 +30,10 @@ function CategoryPage() {
   const pageTitle =
     categoryTitles[categoryName] || categoryName;
 
-  const products = products.filter(
-    (product) =>
-      product.category === categoryName
-  );
+  const categoryProducts = products.filter(
+  (product) =>
+    product.category === categoryName
+);
 
   return (
     <>
@@ -60,15 +60,15 @@ function CategoryPage() {
           </p>
 
           <p className="category-count">
-            {products.length}{" "}
-            {products.length === 1
+            {categoryProducts.length}{" "}
+            {categoryProducts.length === 1
               ? "product available"
               : "products available"}
           </p>
       </section>
 
         <div className="product-grid">
-          {products.map((product) => (
+          {categoryProducts.map((product) => (
             <Link
               to={`/products/${product.id}`}
               className="shop-product-card"

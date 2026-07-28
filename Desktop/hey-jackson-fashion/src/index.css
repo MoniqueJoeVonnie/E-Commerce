@@ -7,9 +7,14 @@ body {
   padding: 0;
   background: white;
   font-family: Arial, sans-serif;
+
+  overflow-x: hidden;
 }
 
 #root {
   width: 100%;
+  max-width: 100%;
   min-height: 100vh;
+
+  overflow-x: hidden;
 }

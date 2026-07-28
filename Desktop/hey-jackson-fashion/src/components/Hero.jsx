@@ -1,4 +1,5 @@
 import homepageVideo from "../assets/homepage-video.mp4";
+import "./Hero.css";
 
 function Hero() {
   return (
@@ -9,9 +10,13 @@ function Hero() {
         muted
         loop
         playsInline
-        preload="auto"
       >
-        <source src={homepageVideo} type="video/mp4" />
+        <source
+          src={homepageVideo}
+          type="video/mp4"
+        />
+
+        Your browser does not support the video tag.
       </video>
     </section>
   );

@@ -1,18 +1,82 @@
-.hero {
-  display: flex;
-  justify-content: center;
-  padding: 0;
-  background: #fff;
+/* ===========================
+   DESKTOP HERO
+=========================== */
+
+.banner {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 130px);
+  min-height: 540px;
+  overflow: hidden;
 }
 
-.hero-image {
+.hero-video {
   width: 100%;
-  max-width: 1124px;
-  margin: 0 auto;
-}
-
-.hero-image img {
-  width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
+  object-fit: cover;
+  object-position: center 20%;
+}
+
+/* ===========================
+   TABLETS
+=========================== */
+
+@media (max-width: 1000px) {
+  .banner {
+    height: clamp(380px, 55vw, 500px);
+    min-height: 0;
+  }
+
+  .hero-video {
+    object-position: center 32%;
+  }
+}
+
+/* ===========================
+   LARGE PHONES
+=========================== */
+
+@media (max-width: 768px) {
+  .banner {
+    height: 360px;
+    min-height: 0;
+  }
+
+  .hero-video {
+    object-fit: cover;
+    object-position: center 35%;
+  }
+}
+
+/* ===========================
+   SMALL PHONES
+=========================== */
+
+@media (max-width: 600px) {
+  .banner {
+    height: 330px;
+    min-height: 0;
+  }
+
+  .hero-video {
+    object-fit: cover;
+    object-position: center 42%;
+  }
+}
+
+/* ===========================
+   VERY SMALL PHONES
+=========================== */
+
+@media (max-width: 420px) {
+  .banner {
+    height: 300px;
+    min-height: 0;
+  }
+
+  .hero-video {
+    object-fit: cover;
+    object-position: center 48%;
+  }
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Link, useParams } from "react-router-dom";
 import {
   FaHeart,
@@ -7,6 +7,7 @@ import {
 import { products } from "../data/products";
 import {
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -17,6 +18,9 @@ import { useWishlist } from "../context/WishlistContext";
 import Footer from "../components/Footer";
 import PageMeta from "../components/PageMeta";
 
+
+  const RECENTLY_VIEWED_KEY =
+    "heyJacksonRecentlyViewed";
 
 function ProductDetail() {
   const { productId } = useParams();
@@ -34,11 +38,26 @@ function ProductDetail() {
   const [selectedImage, setSelectedImage] =
     useState("");
 
+  const [selectedGalleryIndex, setSelectedGalleryIndex,] = 
+    useState(0);
+
+  const [imageFading, setImageFading] =
+    useState(false);  
+
+  const [zoomPosition, setZoomPosition] =
+  useState({
+    x: 50,
+    y: 50,
+  });  
+
   const [justAdded, setJustAdded] = 
     useState(false);
 
   const [miniCartOpen, setMiniCartOpen] =
   useState(false);  
+
+  const [lightboxOpen, setLightboxOpen] =
+  useState(false);
 
   const productImageRef = useRef(null);  
 
@@ -55,32 +74,111 @@ function ProductDetail() {
   ? isInWishlist(product.id)
   : false;
 
-  useEffect(() => {
-    if (!product) return;
-
-    setSelectedSize("");
-
-    if (product.variants?.length) {
-      setSelectedColor(product.variants[0].name);
-
-      setSelectedImage(
-        product.variants[0].gallery?.[0] ||
-          product.image
-      );
-    } else {
-      setSelectedColor("");
-      setSelectedImage(product.image);
-    }
-  }, [product]);
-
   const selectedVariant =
     product?.variants?.find(
       (variant) =>
         variant.name === selectedColor
     );
 
-  useEffect(() => {
+  const galleryImages = useMemo(() => {
     if (selectedVariant?.gallery?.length) {
+      return selectedVariant.gallery;
+    }
+
+    return product?.image
+      ? [product.image]
+      : [];
+  }, [selectedVariant, product]);
+
+  useEffect(() => {
+    galleryImages.forEach((imageSource) => {
+      const image = new Image();
+      image.src = imageSource;
+    });
+  }, [galleryImages]);
+   
+      
+  useEffect(() => {
+    if (!lightboxOpen) return;
+
+    function handleKeyDown(event) {
+      if (event.key === "Escape") {
+        setLightboxOpen(false);
+        return;
+      }
+
+      if (
+        event.key === "ArrowRight" &&
+        galleryImages.length > 1
+      ) {
+        const nextIndex =
+          (selectedGalleryIndex + 1) %
+          galleryImages.length;
+      }
+
+      function handleImageZoomMove(event) {
+        const bounds =
+          event.currentTarget.getBoundingClientRect();
+
+        const x =
+          ((event.clientX - bounds.left) /
+            bounds.width) *
+          100;
+
+        const y =
+          ((event.clientY - bounds.top) /
+            bounds.height) *
+          100;
+
+        setZoomPosition({
+          x,
+          y,
+        });
+      }
+
+      if (
+        event.key === "ArrowLeft" &&
+        galleryImages.length > 1
+      ) {
+        const previousIndex =
+          (
+            selectedGalleryIndex -
+            1 +
+            galleryImages.length
+          ) % galleryImages.length;
+
+        handleGalleryImageChange(
+          galleryImages[previousIndex],
+          previousIndex
+        );
+      }
+    }
+
+    document.addEventListener(
+      "keydown",
+      handleKeyDown
+    );
+
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener(
+        "keydown",
+        handleKeyDown
+      );
+
+      document.body.style.overflow = "";
+    };
+  }, [
+    lightboxOpen,
+    selectedGalleryIndex,
+    galleryImages,
+  ]);
+
+  useEffect(() => {
+  setSelectedGalleryIndex(0);
+
+  if (selectedVariant?.gallery?.length) {
       setSelectedImage(
         selectedVariant.gallery[0]
       );
@@ -159,6 +257,82 @@ function animateProductToCart() {
   );
 }
 
+  function handleGalleryImageChange(image, index) {
+  if (image === selectedImage) return;
+
+    setImageFading(true);
+
+    setTimeout(() => {
+      setSelectedGalleryIndex(index);
+      setSelectedImage(image);
+      setImageFading(false);
+    }, 180);
+  }
+
+  function handleGalleryImageChange(image, index) {
+    if (image === selectedImage) return;
+
+    setImageFading(true);
+
+    setTimeout(() => {
+      setSelectedGalleryIndex(index);
+      setSelectedImage(image);
+      setImageFading(false);
+    }, 180);
+  }
+
+  function handleImageZoomMove(event) {
+    const bounds =
+      event.currentTarget.getBoundingClientRect();
+
+    const x =
+      ((event.clientX - bounds.left) /
+        bounds.width) *
+      100;
+
+    const y =
+      ((event.clientY - bounds.top) /
+        bounds.height) *
+      100;
+
+    setZoomPosition({
+      x,
+      y,
+    });
+  }
+
+function navigateGallery(direction) {
+  if (galleryImages.length <= 1) return;
+
+  const nextIndex =
+    (
+      selectedGalleryIndex +
+      direction +
+      galleryImages.length
+    ) % galleryImages.length;
+
+  handleGalleryImageChange(
+    galleryImages[nextIndex],
+    nextIndex
+  );
+}
+
+  function handleLightboxDragEnd(
+    event,
+    dragInfo
+  ) {
+    const swipeThreshold = 80;
+
+    if (dragInfo.offset.x <= -swipeThreshold) {
+      navigateGallery(1);
+      return;
+    }
+
+    if (dragInfo.offset.x >= swipeThreshold) {
+      navigateGallery(-1);
+    }
+  }
+
   const handleAddToCart = () => {
     if (
       product.sizes?.length &&
@@ -167,6 +341,34 @@ function animateProductToCart() {
       alert(
         "Please select a size before adding this item to your cart."
       );
+
+      useEffect(() => {
+        if (!product) return;
+
+        let recentlyViewed = [];
+
+        try {
+          recentlyViewed = JSON.parse(
+            localStorage.getItem(
+              RECENTLY_VIEWED_KEY
+            ) || "[]"
+          );
+        } catch (error) {
+          console.error(error);
+        }
+
+        const updatedRecentlyViewed = [
+          product,
+          ...recentlyViewed.filter(
+            item => item.id !== product.id
+          ),
+        ].slice(0, 6);
+
+        localStorage.setItem(
+          RECENTLY_VIEWED_KEY,
+          JSON.stringify(updatedRecentlyViewed)
+        );
+      }, [product]);
 
       return;
     }
@@ -247,14 +449,69 @@ function animateProductToCart() {
         <div className="product-detail-layout">
           <div className="product-image-column">
             {selectedImage && (
-              <img
-                ref={productImageRef}
-                key={selectedImage}
-                src={selectedImage}
-                alt={selectedVariant?.name || product.name}
-                className="product-main-image"
-              />
+              <button
+                type="button"
+                className="product-image-button"
+                onClick={() => setLightboxOpen(true)}
+                onMouseMove={handleImageZoomMove}
+                onMouseLeave={() =>
+                  setZoomPosition({
+                    x: 50,
+                    y: 50,
+                  })
+                }
+                aria-label={`Enlarge ${product.name} image`}
+              >
+                <img
+                  ref={productImageRef}
+                  key={selectedImage}
+                  src={selectedImage}
+                  alt={selectedVariant?.name || product.name}
+                  className={`product-main-image ${
+                    imageFading ? "fading" : ""
+                  }`}
+                />
+
+                <span className="product-image-zoom-hint">
+                  Click to enlarge
+                </span>
+              </button>
             )}
+
+          {galleryImages.length > 1 && (
+                <div
+                  className="product-gallery-thumbnails"
+                  aria-label={`${product.name} image gallery`}
+                >
+                  {galleryImages.map((image, index) => (
+                    <button
+                      key={`${image}-${index}`}
+                      type="button"
+                      className={
+                        selectedGalleryIndex === index
+                          ? "product-gallery-thumbnail active"
+                          : "product-gallery-thumbnail"
+                      }
+                      onClick={() =>
+                        handleGalleryImageChange(image, index)
+                      }
+                      aria-label={`View ${product.name} image ${
+                        index + 1
+                      }`}
+                      aria-pressed={
+                        selectedGalleryIndex === index
+                      }
+                    >
+                      <img
+                        src={image}
+                        alt=""
+                        aria-hidden="true"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+
           </div>
 
           <div className="product-detail-info">
@@ -538,6 +795,76 @@ function animateProductToCart() {
           </section>
         )}
         </main>
+
+        <AnimatePresence>
+  {lightboxOpen && selectedImage && (
+      <motion.div
+        className="product-lightbox"
+        role="dialog"
+        aria-modal="true"
+        aria-label={`${product.name} enlarged image`}
+        onClick={() => setLightboxOpen(false)}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25 }}
+      >
+        <motion.button
+          type="button"
+          className="product-lightbox-close"
+          onClick={() => setLightboxOpen(false)}
+          aria-label="Close enlarged image"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          ×
+        </motion.button>
+
+        <motion.img
+          src={selectedImage}
+          alt={selectedVariant?.name || product.name}
+          className="product-lightbox-image"
+          onClick={(event) => event.stopPropagation()}
+
+          drag={
+            galleryImages.length > 1
+              ? "x"
+              : false
+          }
+          dragConstraints={{
+            left: 0,
+            right: 0,
+          }}
+          dragElastic={0.22}
+          onDragEnd={handleLightboxDragEnd}
+
+          onMouseMove={handleImageZoomMove}
+          onMouseLeave={() =>
+            setZoomPosition({ x: 50, y: 50 })
+          }
+
+          initial={{
+            opacity: 0,
+            scale: 0.92,
+   
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+          }}
+          exit={{
+            opacity: 0,
+            scale: 0.92,
+          }}
+          transition={{
+            duration: 0.28,
+            ease: "easeOut",
+          }}
+        />
+      </motion.div>
+    )}
+  </AnimatePresence>
 
       <Footer />
 
