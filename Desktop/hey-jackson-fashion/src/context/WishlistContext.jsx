@@ -50,22 +50,17 @@ export function WishlistProvider({ children }) {
     }
 
     function addToWishlist(product) {
-        setWishlistItems((currentItems) => {
-            const alreadySaved = currentItems.some(
-            (item) => item.id === product.id
-            );
+        if (isInWishlist(product.id)) return;
 
-            if (alreadySaved) {
-            return currentItems;
-            }
+        setWishlistItems((currentItems) => [
+            ...currentItems,
+            product,
+        ]);
 
-            showToast({
+        showToast({
             title: "Added to Wishlist",
             message: `${product.name} saved successfully.`,
             type: "wishlist",
-            });
-
-            return [...currentItems, product];
         });
     }
 
@@ -76,31 +71,34 @@ export function WishlistProvider({ children }) {
     }
 
     function toggleWishlist(product) {
-        setWishlistItems((currentItems) => {
-            const alreadySaved = currentItems.some(
-            (item) => item.id === product.id
-            );
+    const alreadySaved = isInWishlist(product.id);
 
-            if (alreadySaved) {
-            showToast({
-                title: "Removed from Wishlist",
-                message: `${product.name} removed successfully.`,
-                type: "wishlist-remove",
-            });
+    if (alreadySaved) {
+        setWishlistItems((currentItems) =>
+        currentItems.filter(
+            (item) => item.id !== product.id
+        )
+        );
 
-            return currentItems.filter(
-                (item) => item.id !== product.id
-            );
-            }
-
-            showToast({
-            title: "Added to Wishlist",
-            message: `${product.name} saved successfully.`,
-            type: "wishlist",
-            });
-
-            return [...currentItems, product];
+        showToast({
+        title: "Removed from Wishlist",
+        message: `${product.name} removed successfully.`,
+        type: "wishlist-remove",
         });
+
+        return;
+    }
+
+    setWishlistItems((currentItems) => [
+        ...currentItems,
+        product,
+    ]);
+
+    showToast({
+        title: "Added to Wishlist",
+        message: `${product.name} saved successfully.`,
+        type: "wishlist",
+    });
     }
 
     function clearWishlist() {
@@ -108,27 +106,27 @@ export function WishlistProvider({ children }) {
 
         showToast({
             title: "Wishlist Cleared",
-            message: "All items were removed from your wishlist.",
+            message:
+            "All items were removed from your wishlist.",
             type: "wishlist-remove",
         });
-    }
+        }
 
-    const value = {
+        const value = {
         wishlistItems,
-        wishlistCount: wishlistItems.length,
-        isInWishlist,
         addToWishlist,
         removeFromWishlist,
+        isInWishlist,
         toggleWishlist,
         clearWishlist,
-    };
+        };
 
-    return (
+        return (
         <WishlistContext.Provider value={value}>
-        {children}
+            {children}
         </WishlistContext.Provider>
-    );
-    }
+        );
+        }
 
     export function useWishlist() {
     const context = useContext(WishlistContext);

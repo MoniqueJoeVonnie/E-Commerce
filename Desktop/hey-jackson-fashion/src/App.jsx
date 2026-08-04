@@ -17,6 +17,7 @@ import BackToTop from "./components/BackToTop";
 
 
 
+
 const Wishlist = lazy(() =>
   import("./Pages/Wishlist")
 );
@@ -75,6 +76,10 @@ const Search = lazy(() =>
 
 const NotFound = lazy(() =>
   import("./Pages/NotFound")
+);
+
+const StripeSuccess = lazy(() =>
+  import("./Pages/StripeSuccess")
 );
 
 function App() {
@@ -219,6 +224,11 @@ return (
               <NotFound />
             </PageTransition>
           }
+        />
+
+        <Route
+          path="/checkout/success"
+          element={<StripeSuccess />}
         />
 
         </Routes>

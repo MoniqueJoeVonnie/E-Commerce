@@ -23,10 +23,13 @@ import petSofa from "../assets/Pet sofa.png";
 import petCarriers from "../assets/pet-carrier.png";
 import newComboDeals from "../assets/New Combo Deals.png";
 
-import recentReelVideo from "../assets/Splash Page_Doggie Fashion Runway.mp4";
-import tiktokShowcaseVideo from "../assets/EatSleepPlayPoopRepeat_Finished.mp4";
-
 import "../App.css";
+import Testimonials from "../components/Testimonials";
+import bestSellers from "../assets/Best Sellers/canvas-orange-print.png";
+import pupOfTheMonth from "../assets/Pup of the Month/Tan Poodle_Brown Ears.png";
+import SocialShowcase from "../components/SocialShowcase";
+
+
 
 function Home() {
   const [hideScrollGuide, setHideScrollGuide] =
@@ -223,6 +226,8 @@ function Home() {
           </div>
         </motion.section>
 
+        <Testimonials />
+
         <motion.section
           className="collections"
           variants={fadeUp}
@@ -392,71 +397,85 @@ function Home() {
             amount: 0.25,
           }}
         >
-          <h2 className="section-heading">
-            Shop What’s New & Watch Us On TikTok
+         <h2 className="section-heading">
+            Shop What’s New
           </h2>
 
+        <p className="promo-section-description">
+          Discover the latest arrivals and curated
+          combination deals for fashionable pets.
+        </p>
+
           <div className="promo-grid">
-            <div className="promo-card image-card">
-              <h3>New Arrivals</h3>
 
-              <img
-                src={petCarriers}
-                alt="New Arrivals"
-              />
+  <div className="promo-card image-card">
+    <h3>New Arrivals</h3>
 
-              <button type="button">
-                Shop New
-              </button>
-            </div>
+    <img
+      src={petCarriers}
+      alt="New Arrivals"
+    />
 
-            <div className="promo-card image-card">
-              <h3>New Combo Deals</h3>
+    <Link
+      to="/products"
+      className="promo-card-button"
+    >
+      Shop New
+    </Link>
+  </div>
 
-              <img
-                src={newComboDeals}
-                alt="New Combo Deals"
-              />
+  <div className="promo-card image-card">
+    <h3>New Combo Deals</h3>
 
-              <button type="button">
-                Shop Combos
-              </button>
-            </div>
+    <img
+      src={newComboDeals}
+      alt="New Combo Deals"
+    />
 
-            <div className="promo-card video-card">
-              <h3>Recent Reels</h3>
+    <Link
+      to="/products/category/combo-deals"
+      className="promo-card-button"
+    >
+      Shop Combos
+    </Link>
+  </div>
 
-              <video
-                src={recentReelVideo}
-                autoPlay
-                muted
-                loop
-                playsInline
-              />
+    <div className="promo-card image-card">
+      <h3>Best Sellers</h3>
 
-              <button type="button">
-                Watch Reels
-              </button>
-            </div>
+      <img
+        src={bestSellers}
+        alt="Best Sellers"
+      />
 
-            <div className="promo-card video-card">
-              <h3>TikTok Showcase</h3>
+      <Link
+        to="/products"
+        className="promo-card-button"
+      >
+        Shop Best Sellers
+      </Link>
+    </div>
 
-              <video
-                className="promo-video"
-                src={tiktokShowcaseVideo}
-                autoPlay
-                muted
-                loop
-                playsInline
-              />
+    <div className="promo-card image-card">
+      <h3>Pup of the Month</h3>
 
-              <button type="button">
-                Watch TikTok
-              </button>
-            </div>
+      <img
+        src={pupOfTheMonth}
+        alt="Pup of the Month"
+      />
+
+      <Link
+        to="/"
+        className="promo-card-button"
+      >
+        Meet the Pup
+      </Link>
+    </div>
+
           </div>
         </motion.section>
+
+        <SocialShowcase />
 
         <motion.section
           className="vip-club"

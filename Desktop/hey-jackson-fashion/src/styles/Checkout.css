@@ -1261,194 +1261,275 @@
    Print Receipt
 =================================== */
 
+/* ========================================
+   SHIPMENT PROGRESS
+======================================== */
+
+.shipment-progress {
+  margin-top: 34px;
+  padding: 28px;
+  background: #fffafd;
+  border: 1px solid rgba(75, 40, 95, 0.15);
+  border-radius: 18px;
+}
+
+.shipment-progress-header {
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.shipment-progress-header span {
+  color: #817889;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.shipment-progress-header strong {
+  color: #4b285f;
+  font-size: 1rem;
+}
+
+.shipment-timeline {
+  display: flex;
+  align-items: flex-start;
+}
+
+.shipment-step {
+  width: 150px;
+  text-align: center;
+}
+
+.shipment-dot {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 12px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #d8cddd;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #8b8191;
+  font-weight: 800;
+}
+
+.shipment-step.completed .shipment-dot,
+.shipment-step.active .shipment-dot {
+  border-color: #1ba8ad;
+  background: #1ba8ad;
+  color: #ffffff;
+}
+
+.shipment-step.active .shipment-dot {
+  box-shadow:
+    0 0 0 6px rgba(27, 168, 173, 0.13),
+    0 8px 18px rgba(27, 168, 173, 0.2);
+}
+
+.shipment-step h3 {
+  margin: 0 0 7px;
+  color: #4b285f;
+  font-size: 0.92rem;
+}
+
+.shipment-step p {
+  margin: 0;
+  color: #817889;
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.shipment-line {
+  flex: 1;
+  height: 3px;
+  margin-top: 20px;
+  background: #ded5e2;
+}
+
+.shipment-line.completed {
+  background: #1ba8ad;
+}
+
+
+
+@media (max-width: 760px) {
+  .shipment-progress-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .shipment-timeline {
+    display: grid;
+    gap: 20px;
+  }
+
+  .shipment-step {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    gap: 14px;
+    align-items: start;
+    text-align: left;
+  }
+
+  .shipment-dot {
+    margin: 0;
+  }
+
+  .shipment-line {
+    display: none;
+  }
+}
+
+/* ========================================
+   SHIPMENT PROGRESS
+======================================== */
+
+.shipment-progress {
+  margin-top: 34px;
+  padding: 28px;
+  background: #fffafd;
+  border: 1px solid rgba(75, 40, 95, 0.15);
+  border-radius: 18px;
+}
+
+.shipment-progress-header {
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.shipment-progress-header span {
+  color: #817889;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.shipment-progress-header strong {
+  color: #4b285f;
+  font-size: 1rem;
+}
+
+.shipment-timeline {
+  display: flex;
+  align-items: flex-start;
+}
+
+.shipment-step {
+  width: 150px;
+  text-align: center;
+}
+
+.shipment-dot {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 12px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #d8cddd;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #8b8191;
+  font-weight: 800;
+}
+
+.shipment-step.completed .shipment-dot,
+.shipment-step.active .shipment-dot {
+  border-color: #1ba8ad;
+  background: #1ba8ad;
+  color: #ffffff;
+}
+
+.shipment-step.active .shipment-dot {
+  box-shadow:
+    0 0 0 6px rgba(27, 168, 173, 0.13),
+    0 8px 18px rgba(27, 168, 173, 0.2);
+}
+
+.shipment-step h3 {
+  margin: 0 0 7px;
+  color: #4b285f;
+  font-size: 0.92rem;
+}
+
+.shipment-step p {
+  margin: 0;
+  color: #817889;
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.shipment-line {
+  flex: 1;
+  height: 3px;
+  margin-top: 20px;
+  background: #ded5e2;
+}
+
+.shipment-line.completed {
+  background: #1ba8ad;
+}
+
+
+
+/* ========================================
+   SHIPMENT MOBILE
+======================================== */
+
+@media (max-width: 760px) {
+  .shipment-progress-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .shipment-timeline {
+    display: grid;
+    gap: 20px;
+  }
+
+  .shipment-step {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    gap: 14px;
+    align-items: start;
+    text-align: left;
+  }
+
+  .shipment-dot {
+    margin: 0;
+  }
+
+  .shipment-line {
+    display: none;
+  }
+}
+
+/* ========================================
+   PRINT
+======================================== */
+
 @media print {
   .checkout-header,
   .checkout-footer,
-  .return-to-cart-link,
-  .checkout-progress,
+  .confirmation-progress,
   .confirmation-actions {
     display: none !important;
   }
 
-  .checkout-main {
-    width: 100%;
+  .confirmation-page {
     padding: 0;
+    background: #ffffff;
   }
 
-  .order-confirmation-card {
+  .confirmation-card {
     width: 100%;
-    max-width: none;
-    margin: 0;
     padding: 20px;
-    border: 0;
-    border-radius: 0;
+    border: none;
     box-shadow: none;
-    animation: none;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* ===================================
-   max-width: min-width: 651px and max-width: 980px
-=================================== */
-
-@media (min-width: 651px) and (max-width: 980px) {
-  .checkout-content {
-    grid-template-columns: 1fr;
-  }
-
-  .checkout-summary-card {
-    position: static;
-  }
-
-  .checkout-summary-item {
-    grid-template-columns: 58px minmax(0, 1fr);
-  }
-
-.checkout-summary-item-total {
-    grid-column: 2;
-  }
-
-  .payment-card {
-  padding: 28px 22px;
-}
-
-.payment-card-heading {
-  flex-direction: column;
-  margin-bottom: 26px;
-}
-
-.checkout-action-buttons {
-  grid-template-columns: 1fr;
-}
-
-.checkout-back-button {
-  order: 2;
-}
-
-.checkout-action-buttons .continue-payment-button {
-  order: 1;
-}
-}
-
-
-
-
-
-/* ===================================
-   max-width: 650px
-=================================== */
-
-
-@media (max-width: 650px) {
-  .checkout-main {
-    width: min(90%, 1200px);
-    padding: 50px 0 70px;
-  }
-
-  .checkout-placeholder {
-    padding: 28px 22px;
-  }
-
-  .checkout-progress {
-    align-items: flex-start;
-    margin-bottom: 42px;
-  }
-
-.checkout-step {
-    min-width: auto;
-    flex: 1;
-    flex-direction: column;
-    gap: 8px;
-    text-align: center;
-  }
-
-.checkout-step-number {
-    width: 38px;
-    height: 38px;
-  }
-
-.checkout-step-label {
-    font-size: 0.95rem;
-  }
-
-.checkout-step small {
-    display: none;
-  }
-
-.checkout-progress-line {
-    width: 28px;
-    margin: 18px 5px 0;
-  }
-
-  .checkout-content {
-  grid-template-columns: 1fr;
-}
-
-.shipping-card {
-  padding: 28px 22px;
-}
-
-.shipping-card-heading {
-  flex-direction: column;
-  margin-bottom: 28px;
-}
-
-.form-row.two-columns,
-.location-row {
-  grid-template-columns: 1fr;
-}
-
-.checkout-summary-card {
-  position: static;
-  padding: 26px 22px;
-}
-
-.return-to-cart-link {
-  margin-bottom: 24px;
-}
-
-.continue-payment-button {
-  min-height: 56px;
-  padding: 0 22px;
-}
-
-.form-group input.input-error,
-.form-group select.input-error {
-  border-color: #d84f72;
-  background: #fffafd;
-  box-shadow: 0 0 0 4px rgba(216, 79, 114, 0.1);
-}
-
-.form-group input.input-error:focus,
-.form-group select.input-error:focus {
-  border-color: #d84f72;
-  box-shadow: 0 0 0 4px rgba(216, 79, 114, 0.14);
-}
-
-.form-error-message {
-  margin: -2px 0 0;
-  font-family: "Poppins", sans-serif;
-  font-size: 0.72rem;
-  font-weight: 500;
-  line-height: 1.45;
-  color: #c73d63;
-}
-}
-
-
-

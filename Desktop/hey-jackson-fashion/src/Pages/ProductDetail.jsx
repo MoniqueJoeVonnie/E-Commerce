@@ -17,10 +17,11 @@ import MiniCart from "../components/MiniCart";
 import { useWishlist } from "../context/WishlistContext";
 import Footer from "../components/Footer";
 import PageMeta from "../components/PageMeta";
+import CompleteTheLook from "../components/CompleteTheLook";
+import RecentlyViewed from "../components/RecentlyViewed";
 
-
-  const RECENTLY_VIEWED_KEY =
-    "heyJacksonRecentlyViewed";
+const RECENTLY_VIEWED_KEY =
+  "heyJacksonRecentlyViewed";
 
 function ProductDetail() {
   const { productId } = useParams();
@@ -38,41 +39,111 @@ function ProductDetail() {
   const [selectedImage, setSelectedImage] =
     useState("");
 
-  const [selectedGalleryIndex, setSelectedGalleryIndex,] = 
-    useState(0);
+  const [
+    selectedGalleryIndex,
+    setSelectedGalleryIndex,
+  ] = useState(0);
 
   const [imageFading, setImageFading] =
-    useState(false);  
+    useState(false);
 
-  const [zoomPosition, setZoomPosition] =
-  useState({
+  const [, setZoomPosition] = useState({
     x: 50,
     y: 50,
-  });  
+  });
 
-  const [justAdded, setJustAdded] = 
+  const [justAdded, setJustAdded] =
     useState(false);
 
   const [miniCartOpen, setMiniCartOpen] =
-  useState(false);  
+    useState(false);
 
   const [lightboxOpen, setLightboxOpen] =
-  useState(false);
+    useState(false);
 
-  const productImageRef = useRef(null);  
+  const productImageRef = useRef(null);
 
   const { addToCart } = useCart();
 
-  const { 
-    addToWishlist, 
-    removeFromWishlist, 
+  const {
+    addToWishlist,
+    removeFromWishlist,
     isInWishlist,
-    toggleWishlist,
   } = useWishlist();
 
   const productIsWishlisted = product
-  ? isInWishlist(product.id)
-  : false;
+    ? isInWishlist(product.id)
+    : false;
+
+  useEffect(() => {
+    if (!product) return;
+
+    setSelectedSize("");
+    setSelectedGalleryIndex(0);
+    setImageFading(false);
+    setLightboxOpen(false);
+
+    if (product.variants?.length) {
+      const firstVariant = product.variants[0];
+
+      setSelectedColor(firstVariant.name);
+
+      setSelectedImage(
+        firstVariant.gallery?.[0] ||
+          product.image ||
+          ""
+      );
+    } else {
+      setSelectedColor("");
+      setSelectedImage(product.image || "");
+    }
+  }, [product]);
+
+  useEffect(() => {
+    if (!product) return;
+
+    let storedProducts = [];
+
+    try {
+      const savedProducts = localStorage.getItem(
+        RECENTLY_VIEWED_KEY
+      );
+
+      storedProducts = savedProducts
+        ? JSON.parse(savedProducts)
+        : [];
+
+      if (!Array.isArray(storedProducts)) {
+        storedProducts = [];
+      }
+    } catch (error) {
+      console.error(
+        "Unable to read recently viewed products:",
+        error
+      );
+
+      storedProducts = [];
+    }
+
+    const updatedProducts = [
+      product,
+      ...storedProducts.filter(
+        (item) => item.id !== product.id
+      ),
+    ].slice(0, 6);
+
+    try {
+      localStorage.setItem(
+        RECENTLY_VIEWED_KEY,
+        JSON.stringify(updatedProducts)
+      );
+    } catch (error) {
+      console.error(
+        "Unable to save recently viewed products:",
+        error
+      );
+    }
+  }, [product]);
 
   const selectedVariant =
     product?.variants?.find(
@@ -91,13 +162,28 @@ function ProductDetail() {
   }, [selectedVariant, product]);
 
   useEffect(() => {
+    setSelectedGalleryIndex(0);
+
+    if (selectedVariant?.gallery?.length) {
+      setSelectedImage(
+        selectedVariant.gallery[0]
+      );
+
+      return;
+    }
+
+    if (product?.image) {
+      setSelectedImage(product.image);
+    }
+  }, [selectedVariant, product]);
+
+  useEffect(() => {
     galleryImages.forEach((imageSource) => {
       const image = new Image();
       image.src = imageSource;
     });
   }, [galleryImages]);
-   
-      
+
   useEffect(() => {
     if (!lightboxOpen) return;
 
@@ -111,45 +197,40 @@ function ProductDetail() {
         event.key === "ArrowRight" &&
         galleryImages.length > 1
       ) {
-        const nextIndex =
-          (selectedGalleryIndex + 1) %
-          galleryImages.length;
-      }
+        setSelectedGalleryIndex(
+          (currentIndex) => {
+            const nextIndex =
+              (currentIndex + 1) %
+              galleryImages.length;
 
-      function handleImageZoomMove(event) {
-        const bounds =
-          event.currentTarget.getBoundingClientRect();
+            setSelectedImage(
+              galleryImages[nextIndex]
+            );
 
-        const x =
-          ((event.clientX - bounds.left) /
-            bounds.width) *
-          100;
-
-        const y =
-          ((event.clientY - bounds.top) /
-            bounds.height) *
-          100;
-
-        setZoomPosition({
-          x,
-          y,
-        });
+            return nextIndex;
+          }
+        );
       }
 
       if (
         event.key === "ArrowLeft" &&
         galleryImages.length > 1
       ) {
-        const previousIndex =
-          (
-            selectedGalleryIndex -
-            1 +
-            galleryImages.length
-          ) % galleryImages.length;
+        setSelectedGalleryIndex(
+          (currentIndex) => {
+            const previousIndex =
+              (
+                currentIndex -
+                1 +
+                galleryImages.length
+              ) % galleryImages.length;
 
-        handleGalleryImageChange(
-          galleryImages[previousIndex],
-          previousIndex
+            setSelectedImage(
+              galleryImages[previousIndex]
+            );
+
+            return previousIndex;
+          }
         );
       }
     }
@@ -169,107 +250,84 @@ function ProductDetail() {
 
       document.body.style.overflow = "";
     };
-  }, [
-    lightboxOpen,
-    selectedGalleryIndex,
-    galleryImages,
-  ]);
+  }, [lightboxOpen, galleryImages]);
 
-  useEffect(() => {
-  setSelectedGalleryIndex(0);
+  function animateProductToCart() {
+    const productImage = productImageRef.current;
+    const cartLink = document.querySelector(
+      ".navbar-cart-link"
+    );
 
-  if (selectedVariant?.gallery?.length) {
-      setSelectedImage(
-        selectedVariant.gallery[0]
-      );
-    }
-  }, [selectedVariant]);
+    if (!productImage || !cartLink) return;
 
-function animateProductToCart() {
-  const productImage = productImageRef.current;
-  const cartLink = document.querySelector(
-    ".navbar-cart-link"
-  );
+    const imageRect =
+      productImage.getBoundingClientRect();
 
-  if (!productImage || !cartLink) return;
+    const cartRect =
+      cartLink.getBoundingClientRect();
 
-  const imageRect =
-    productImage.getBoundingClientRect();
+    const destinationX =
+      cartRect.left +
+      cartRect.width / 2 -
+      imageRect.left -
+      imageRect.width / 2;
 
-  const cartRect =
-    cartLink.getBoundingClientRect();
+    const destinationY =
+      cartRect.top +
+      cartRect.height / 2 -
+      imageRect.top -
+      imageRect.height / 2;
 
-  const destinationX =
-    cartRect.left +
-    cartRect.width / 2 -
-    imageRect.left -
-    imageRect.width / 2;
+    const flyingWrapper =
+      document.createElement("div");
 
-  const destinationY =
-    cartRect.top +
-    cartRect.height / 2 -
-    imageRect.top -
-    imageRect.height / 2;
+    const flyingImage =
+      productImage.cloneNode(true);
 
-  const flyingWrapper =
-    document.createElement("div");
+    flyingWrapper.className =
+      "flying-product-wrapper";
 
-  const flyingImage =
-    productImage.cloneNode(true);
+    flyingImage.className =
+      "flying-product-image";
 
-  flyingWrapper.className =
-    "flying-product-wrapper";
+    flyingWrapper.style.left =
+      `${imageRect.left}px`;
 
-  flyingImage.className =
-    "flying-product-image";
+    flyingWrapper.style.top =
+      `${imageRect.top}px`;
 
-  flyingWrapper.style.left =
-    `${imageRect.left}px`;
+    flyingWrapper.style.width =
+      `${imageRect.width}px`;
 
-  flyingWrapper.style.top =
-    `${imageRect.top}px`;
+    flyingWrapper.style.height =
+      `${imageRect.height}px`;
 
-  flyingWrapper.style.width =
-    `${imageRect.width}px`;
+    flyingWrapper.appendChild(flyingImage);
+    document.body.appendChild(flyingWrapper);
 
-  flyingWrapper.style.height =
-    `${imageRect.height}px`;
+    requestAnimationFrame(() => {
+      flyingWrapper.style.transform =
+        `translateX(${destinationX}px)`;
 
-  flyingWrapper.appendChild(flyingImage);
-  document.body.appendChild(flyingWrapper);
+      flyingImage.style.transform =
+        `translateY(${destinationY}px) scale(0.08)`;
 
-  requestAnimationFrame(() => {
-    flyingWrapper.style.transform =
-      `translateX(${destinationX}px)`;
+      flyingImage.style.opacity = "0.15";
+    });
 
-    flyingImage.style.transform =
-      `translateY(${destinationY}px) scale(0.08)`;
-
-    flyingImage.style.opacity = "0.15";
-  });
-
-  flyingWrapper.addEventListener(
-    "transitionend",
-    () => {
-      flyingWrapper.remove();
-    },
-    { once: true }
-  );
-}
-
-  function handleGalleryImageChange(image, index) {
-  if (image === selectedImage) return;
-
-    setImageFading(true);
-
-    setTimeout(() => {
-      setSelectedGalleryIndex(index);
-      setSelectedImage(image);
-      setImageFading(false);
-    }, 180);
+    flyingWrapper.addEventListener(
+      "transitionend",
+      () => {
+        flyingWrapper.remove();
+      },
+      { once: true }
+    );
   }
 
-  function handleGalleryImageChange(image, index) {
+  function handleGalleryImageChange(
+    image,
+    index
+  ) {
     if (image === selectedImage) return;
 
     setImageFading(true);
@@ -301,21 +359,21 @@ function animateProductToCart() {
     });
   }
 
-function navigateGallery(direction) {
-  if (galleryImages.length <= 1) return;
+  function navigateGallery(direction) {
+    if (galleryImages.length <= 1) return;
 
-  const nextIndex =
-    (
-      selectedGalleryIndex +
-      direction +
-      galleryImages.length
-    ) % galleryImages.length;
+    const nextIndex =
+      (
+        selectedGalleryIndex +
+        direction +
+        galleryImages.length
+      ) % galleryImages.length;
 
-  handleGalleryImageChange(
-    galleryImages[nextIndex],
-    nextIndex
-  );
-}
+    handleGalleryImageChange(
+      galleryImages[nextIndex],
+      nextIndex
+    );
+  }
 
   function handleLightboxDragEnd(
     event,
@@ -342,34 +400,6 @@ function navigateGallery(direction) {
         "Please select a size before adding this item to your cart."
       );
 
-      useEffect(() => {
-        if (!product) return;
-
-        let recentlyViewed = [];
-
-        try {
-          recentlyViewed = JSON.parse(
-            localStorage.getItem(
-              RECENTLY_VIEWED_KEY
-            ) || "[]"
-          );
-        } catch (error) {
-          console.error(error);
-        }
-
-        const updatedRecentlyViewed = [
-          product,
-          ...recentlyViewed.filter(
-            item => item.id !== product.id
-          ),
-        ].slice(0, 6);
-
-        localStorage.setItem(
-          RECENTLY_VIEWED_KEY,
-          JSON.stringify(updatedRecentlyViewed)
-        );
-      }, [product]);
-
       return;
     }
 
@@ -386,11 +416,11 @@ function navigateGallery(direction) {
       selectedImage
     );
 
-      setJustAdded(true);
+    setJustAdded(true);
 
-      setTimeout(() => {
-        setJustAdded(false);
-      }, 2000);
+    setTimeout(() => {
+      setJustAdded(false);
+    }, 2000);
   };
 
   function handleWishlistClick() {
@@ -438,6 +468,14 @@ function navigateGallery(direction) {
 
   return (
     <>
+      <PageMeta
+        title={`${product.name} | Hey Jackson! Fashion`}
+        description={
+          product.description ||
+          `Shop ${product.name} from Hey Jackson! Fashion.`
+        }
+      />
+
       <main className="product-detail-page">
         <Link
           to={`/products/category/${categoryRoute}`}
@@ -452,7 +490,9 @@ function navigateGallery(direction) {
               <button
                 type="button"
                 className="product-image-button"
-                onClick={() => setLightboxOpen(true)}
+                onClick={() =>
+                  setLightboxOpen(true)
+                }
                 onMouseMove={handleImageZoomMove}
                 onMouseLeave={() =>
                   setZoomPosition({
@@ -466,9 +506,14 @@ function navigateGallery(direction) {
                   ref={productImageRef}
                   key={selectedImage}
                   src={selectedImage}
-                  alt={selectedVariant?.name || product.name}
+                  alt={
+                    selectedVariant?.name ||
+                    product.name
+                  }
                   className={`product-main-image ${
-                    imageFading ? "fading" : ""
+                    imageFading
+                      ? "fading"
+                      : ""
                   }`}
                 />
 
@@ -478,28 +523,34 @@ function navigateGallery(direction) {
               </button>
             )}
 
-          {galleryImages.length > 1 && (
-                <div
-                  className="product-gallery-thumbnails"
-                  aria-label={`${product.name} image gallery`}
-                >
-                  {galleryImages.map((image, index) => (
+            {galleryImages.length > 1 && (
+              <div
+                className="product-gallery-thumbnails"
+                aria-label={`${product.name} image gallery`}
+              >
+                {galleryImages.map(
+                  (image, index) => (
                     <button
                       key={`${image}-${index}`}
                       type="button"
                       className={
-                        selectedGalleryIndex === index
+                        selectedGalleryIndex ===
+                        index
                           ? "product-gallery-thumbnail active"
                           : "product-gallery-thumbnail"
                       }
                       onClick={() =>
-                        handleGalleryImageChange(image, index)
+                        handleGalleryImageChange(
+                          image,
+                          index
+                        )
                       }
                       aria-label={`View ${product.name} image ${
                         index + 1
                       }`}
                       aria-pressed={
-                        selectedGalleryIndex === index
+                        selectedGalleryIndex ===
+                        index
                       }
                     >
                       <img
@@ -508,40 +559,37 @@ function navigateGallery(direction) {
                         aria-hidden="true"
                       />
                     </button>
-                  ))}
-                </div>
-              )}
-
+                  )
+                )}
+              </div>
+            )}
           </div>
 
           <div className="product-detail-info">
-          <div className="product-detail-heading">
-            <p className="product-detail-eyebrow">
-              {categoryTitle}
-            </p>
+            <div className="product-detail-heading">
+              <p className="product-detail-eyebrow">
+                {categoryTitle}
+              </p>
 
-            <h1>{product.name}</h1>
+              <h1>{product.name}</h1>
 
-            <div className="product-price-row">
-              <h2>{product.price}</h2>
+              <div className="product-price-row">
+                <h2>{product.price}</h2>
 
-              <span className="product-stock-badge">
-                In Stock
-              </span>
+                <span className="product-stock-badge">
+                  In Stock
+                </span>
+              </div>
+
+              <p className="product-detail-description">
+                {product.description}
+              </p>
             </div>
 
-            <p className="product-detail-description">
-              {product.description}
-            </p>
-          </div>
-          
-
-            {product.variants?.length >
-              0 && (
+            {product.variants?.length > 0 && (
               <>
                 <label>
-                  Color:{" "}
-                  {selectedVariant?.name}
+                  Color: {selectedVariant?.name}
                 </label>
 
                 <div className="color-options">
@@ -564,7 +612,9 @@ function navigateGallery(direction) {
                       >
                         {variant.thumbnail && (
                           <img
-                            src={variant.thumbnail}
+                            src={
+                              variant.thumbnail
+                            }
                             alt={variant.name}
                           />
                         )}
@@ -614,7 +664,9 @@ function navigateGallery(direction) {
                 }`}
                 onClick={handleAddToCart}
               >
-                {justAdded ? "✓ Added!" : "Add to Cart"}
+                {justAdded
+                  ? "✓ Added!"
+                  : "Add to Cart"}
               </button>
 
               <button
@@ -630,7 +682,9 @@ function navigateGallery(direction) {
                     ? `Remove ${product.name} from wishlist`
                     : `Add ${product.name} to wishlist`
                 }
-                aria-pressed={productIsWishlisted}
+                aria-pressed={
+                  productIsWishlisted
+                }
               >
                 {productIsWishlisted ? (
                   <>
@@ -647,38 +701,52 @@ function navigateGallery(direction) {
             </div>
           </div>
 
-                 <div
-          className="product-confidence-row"
-              aria-label="Shopping benefits"
-            >
-              <div className="product-confidence-item">
-                <span aria-hidden="true">🚚</span>
+          <div
+            className="product-confidence-row"
+            aria-label="Shopping benefits"
+          >
+            <div className="product-confidence-item">
+              <span aria-hidden="true">
+                🚚
+              </span>
 
-                <div>
-                  <strong>Fast Shipping</strong>
-                  <small>Ships in 1–3 business days</small>
-                </div>
-              </div>
-
-              <div className="product-confidence-item">
-                <span aria-hidden="true">🔒</span>
-
-                <div>
-                  <strong>Secure Checkout</strong>
-                  <small>Encrypted payment experience</small>
-                </div>
-              </div>
-
-              <div className="product-confidence-item">
-                <span aria-hidden="true">✨</span>
-
-                <div>
-                  <strong>Premium Style</strong>
-                  <small>Designed for fashionable pets</small>
-                </div>
+              <div>
+                <strong>Fast Shipping</strong>
+                <small>
+                  Ships in 1–3 business days
+                </small>
               </div>
             </div>
+
+            <div className="product-confidence-item">
+              <span aria-hidden="true">
+                🔒
+              </span>
+
+              <div>
+                <strong>
+                  Secure Checkout
+                </strong>
+                <small>
+                  Encrypted payment experience
+                </small>
+              </div>
             </div>
+
+            <div className="product-confidence-item">
+              <span aria-hidden="true">
+                ✨
+              </span>
+
+              <div>
+                <strong>Premium Style</strong>
+                <small>
+                  Designed for fashionable pets
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {product.details && (
           <section className="product-details-section">
@@ -702,10 +770,10 @@ function navigateGallery(direction) {
                   ✨
                 </span>
 
-                <h3>Why You'll Love It</h3>
+                <h3>Why You&apos;ll Love It</h3>
 
                 <ul>
-                  {product.details.features.map(
+                  {product.details.features?.map(
                     (feature, index) => (
                       <li key={index}>
                         {feature}
@@ -723,7 +791,7 @@ function navigateGallery(direction) {
                 <h3>Product Details</h3>
 
                 <ul>
-                  {product.details.specifications.map(
+                  {product.details.specifications?.map(
                     (detail, index) => (
                       <li key={index}>
                         {detail}
@@ -736,141 +804,112 @@ function navigateGallery(direction) {
           </section>
         )}
 
-        {product.completeTheLook && (
-          <section className="complete-look-section">
-            <div className="complete-look-heading">
-              <p className="section-eyebrow">
-                STYLED TOGETHER
-              </p>
-
-              <h2 className="section-title">
-                Complete the Look
-              </h2>
-
-              <p className="complete-look-description">
-                Finish your pup&apos;s signature style with
-                these hand-selected favorites.
-              </p>
-            </div>
-
-            <div className="complete-look-grid">
-              {product.completeTheLook.map(
-                (relatedId) => {
-                  const relatedProduct =
-                    products.find(
-                      (item) =>
-                        item.id === relatedId
-                    );
-
-                  if (!relatedProduct) {
-                    return null;
-                  }
-
-                  const relatedImage =
-                    relatedProduct.recommendationImage ||
-                    relatedProduct.image ||
-                    null;
-
-                  return (
-                    <Link
-                      key={relatedProduct.id}
-                      to={`/products/${relatedProduct.id}`}
-                      className="complete-look-card"
-                    >
-                      {relatedImage && (
-                        <img
-                          src={relatedImage}
-                          alt={relatedProduct.name}
-                        />
-                      )}
-
-                      <h3>{relatedProduct.name}</h3>
-
-                      <p>{relatedProduct.price}</p>
-                    </Link>
-                  );
-                }
-              )}
-            </div>
-          </section>
-        )}
-        </main>
-
-        <AnimatePresence>
-  {lightboxOpen && selectedImage && (
-      <motion.div
-        className="product-lightbox"
-        role="dialog"
-        aria-modal="true"
-        aria-label={`${product.name} enlarged image`}
-        onClick={() => setLightboxOpen(false)}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.25 }}
-      >
-        <motion.button
-          type="button"
-          className="product-lightbox-close"
-          onClick={() => setLightboxOpen(false)}
-          aria-label="Close enlarged image"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          ×
-        </motion.button>
-
-        <motion.img
-          src={selectedImage}
-          alt={selectedVariant?.name || product.name}
-          className="product-lightbox-image"
-          onClick={(event) => event.stopPropagation()}
-
-          drag={
-            galleryImages.length > 1
-              ? "x"
-              : false
+        <CompleteTheLook
+          relatedProductIds={
+            product.completeTheLook
           }
-          dragConstraints={{
-            left: 0,
-            right: 0,
-          }}
-          dragElastic={0.22}
-          onDragEnd={handleLightboxDragEnd}
-
-          onMouseMove={handleImageZoomMove}
-          onMouseLeave={() =>
-            setZoomPosition({ x: 50, y: 50 })
-          }
-
-          initial={{
-            opacity: 0,
-            scale: 0.92,
-   
-          }}
-          animate={{
-            opacity: 1,
-            scale: 1,
-          }}
-          exit={{
-            opacity: 0,
-            scale: 0.92,
-          }}
-          transition={{
-            duration: 0.28,
-            ease: "easeOut",
-          }}
         />
-      </motion.div>
-    )}
-  </AnimatePresence>
+
+        <RecentlyViewed
+          currentProductId={product.id}
+        />
+      </main>
+
+      <AnimatePresence>
+        {lightboxOpen && selectedImage && (
+          <motion.div
+            className="product-lightbox"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${product.name} enlarged image`}
+            onClick={() =>
+              setLightboxOpen(false)
+            }
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <motion.button
+              type="button"
+              className="product-lightbox-close"
+              onClick={() =>
+                setLightboxOpen(false)
+              }
+              aria-label="Close enlarged image"
+              initial={{
+                opacity: 0,
+                scale: 0.8,
+              }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+              }}
+              exit={{ opacity: 0 }}
+            >
+              ×
+            </motion.button>
+
+            <motion.img
+              src={selectedImage}
+              alt={
+                selectedVariant?.name ||
+                product.name
+              }
+              className="product-lightbox-image"
+              onClick={(event) =>
+                event.stopPropagation()
+              }
+              drag={
+                galleryImages.length > 1
+                  ? "x"
+                  : false
+              }
+              dragConstraints={{
+                left: 0,
+                right: 0,
+              }}
+              dragElastic={0.22}
+              onDragEnd={
+                handleLightboxDragEnd
+              }
+              onMouseMove={
+                handleImageZoomMove
+              }
+              onMouseLeave={() =>
+                setZoomPosition({
+                  x: 50,
+                  y: 50,
+                })
+              }
+              initial={{
+                opacity: 0,
+                scale: 0.92,
+              }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+              }}
+              exit={{
+                opacity: 0,
+                scale: 0.92,
+              }}
+              transition={{
+                duration: 0.28,
+                ease: "easeOut",
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <Footer />
 
       <MiniCart
         isOpen={miniCartOpen}
-        onClose={() => setMiniCartOpen(false)}
+        onClose={() =>
+          setMiniCartOpen(false)
+        }
       />
     </>
   );

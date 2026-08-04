@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+} from "react-router-dom";
 import CheckoutHeader from "../components/CheckoutHeader";
 import CheckoutFooter from "../components/CheckoutFooter";
 import { useCart } from "../context/CartContext";
@@ -8,9 +11,10 @@ import visaLogo from "../assets/payment/visa.svg";
 import mastercardLogo from "../assets/payment/mastercard.svg";
 import amexLogo from "../assets/payment/amex.svg";
 import discoverLogo from "../assets/payment/discover.svg";
-import paypalLogo from "../assets/payment/paypal.svg";
 
 function Checkout() {
+  const navigate = useNavigate();
+
   const {
     cartItems,
     cartCount,
@@ -18,8 +22,6 @@ function Checkout() {
   } = useCart();
 
   const [checkoutStep, setCheckoutStep] = useState(1);
-  const [orderSubmitted, setOrderSubmitted] = useState(false);
-  const [completedOrder, setCompletedOrder] = useState(null);
   const [isProcessingOrder, setIsProcessingOrder] = useState(false);
   
   const [shippingInfo, setShippingInfo] = useState({
@@ -390,104 +392,133 @@ const handlePaymentBlur = (event) => {
   const handlePlaceOrder = (event) => {
     event.preventDefault();
 
-    if (isProcessingOrder) {
+    if (isProcessingOrder || cartItems.length === 0) {
       return;
     }
 
     setIsProcessingOrder(true);
 
-    setTimeout(() => {
-      const submittedAt = new Date();
+    window.setTimeout(() => {
+      try {
+        const submittedAt = new Date();
+        const cleanCardNumber =
+          paymentInfo.cardNumber.replace(/\D/g, "");
+        const cardType =
+          getCardType(cleanCardNumber) ||
+          "Credit or Debit Card";
+        const orderId = generateOrderNumber();
 
-      const order = {
-        id: generateOrderNumber(),
-        submittedAt: submittedAt.toISOString(),
-        formattedDate: formatOrderDate(submittedAt),
-        estimatedDelivery: getEstimatedDelivery(),
+        const order = {
+          id: orderId,
+          orderNumber: orderId,
+          submittedAt: submittedAt.toISOString(),
+          formattedDate: formatOrderDate(submittedAt),
+          estimatedDelivery: getEstimatedDelivery(),
 
-        items: cartItems.map((item) => ({
-          id: item.id,
-          productId: item.productId,
-          name: item.name,
-          image: item.image,
-          color: item.color,
-          size: item.size,
-          quantity: item.quantity,
-          price: item.price,
-        })),
+          items: cartItems.map((item) => ({
+            id: item.id,
+            productId: item.productId,
+            name: item.name,
+            image:
+              item.image ||
+              item.selectedImage ||
+              item.productImage ||
+              null,
+            selectedImage:
+              item.selectedImage || item.image || null,
+            color:
+              item.color || item.selectedColor || "",
+            size:
+              item.size || item.selectedSize || "",
+            quantity: item.quantity || 1,
+            price: item.price,
+          })),
 
-        shippingAddress: {
-          firstName: shippingInfo.firstName,
-          lastName: shippingInfo.lastName,
-          address: shippingInfo.address,
-          apartment: shippingInfo.apartment,
-          city: shippingInfo.city,
-          state: shippingInfo.state,
-          zipCode: shippingInfo.zipCode,
-          email: shippingInfo.email,
-          phone: shippingInfo.phone,
-        },
+          shippingAddress: {
+            firstName: shippingInfo.firstName,
+            lastName: shippingInfo.lastName,
+            fullName: [
+              shippingInfo.firstName,
+              shippingInfo.lastName,
+            ]
+              .filter(Boolean)
+              .join(" "),
+            address: shippingInfo.address,
+            address1: shippingInfo.address,
+            address2: shippingInfo.apartment,
+            apartment: shippingInfo.apartment,
+            city: shippingInfo.city,
+            state: shippingInfo.state,
+            zipCode: shippingInfo.zipCode,
+            zip: shippingInfo.zipCode,
+            email: shippingInfo.email,
+            phone: shippingInfo.phone,
+          },
 
-        payment: {
-          method: paymentInfo.cardNumber
-            .replace(/\D/g, "")
-            .startsWith("4")
-              ? "Visa"
-              : "Credit or Debit Card",
+          paymentMethod: {
+            cardType,
+            lastFour: cleanCardNumber.slice(-4),
+          },
 
-          lastFour: paymentInfo.cardNumber
-            .replace(/\D/g, "")
-            .slice(-4),
+          payment: {
+            method: cardType,
+            cardType,
+            lastFour: cleanCardNumber.slice(-4),
+            billingMatchesShipping:
+              paymentInfo.billingMatchesShipping,
+          },
 
-          billingMatchesShipping:
-            paymentInfo.billingMatchesShipping,
-        },
+          subtotal,
+          shipping,
+          tax: estimatedTax,
+          estimatedTax,
+          total,
+          itemCount: cartCount,
+          status: "Order Submitted",
+        };
 
-        subtotal,
-        shipping,
-        tax: estimatedTax,
-        total,
-        itemCount: cartCount,
-        status: "Order Submitted",
-      };
+        const savedOrders = JSON.parse(
+          localStorage.getItem("heyJacksonOrders") || "[]"
+        );
 
-      setCompletedOrder(order);
+        const safeSavedOrders = Array.isArray(savedOrders)
+          ? savedOrders
+          : [];
 
-      const savedOrders = JSON.parse(
-        localStorage.getItem("heyJacksonOrders") || "[]"
-      );
+        localStorage.setItem(
+          "heyJacksonOrders",
+          JSON.stringify([order, ...safeSavedOrders])
+        );
 
-      localStorage.setItem(
-        "heyJacksonOrders",
-        JSON.stringify([order, ...savedOrders])
-      );
+        localStorage.setItem(
+          "heyJacksonLatestOrder",
+          JSON.stringify(order)
+        );
 
-      localStorage.setItem(
-        "heyJacksonLatestOrder",
-        JSON.stringify(order)
-      );
+        clearCart({
+          showNotification: false,
+        });
 
-      setOrderSubmitted(true);
+        navigate(
+          `/checkout/confirmation/${order.id}`
+        );
+      } catch (error) {
+        console.error(
+          "Unable to complete the order:",
+          error
+        );
 
-      clearCart({
-        showNotification: false,
-      });
-
-      setIsProcessingOrder(false);
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
+        setIsProcessingOrder(false);
+      }
     }, 900);
   };
 
   const subtotal = cartItems.reduce((total, item) => {
-    const numericPrice = parseFloat(
-      item.price.replace(/[$,]/g, "")
+    const numericPrice = Number(
+      String(item.price).replace(/[^0-9.]/g, "")
     );
 
-    return total + numericPrice * item.quantity;
+    return total + numericPrice * (item.quantity || 1);
   }, 0);
 
   const shipping = subtotal >= 50 || subtotal === 0 ? 0 : 6.99;
@@ -570,26 +601,13 @@ const handlePaymentBlur = (event) => {
           </div>
         </div>
 
-       <h1>
-        {checkoutStep === 1 && "Checkout"}
-        {checkoutStep === 2 && "Payment"}
-        {checkoutStep === 3 &&
-          !orderSubmitted &&
-          "Review Order"}
-        {checkoutStep === 3 &&
-          orderSubmitted &&
-          "Order Confirmation"}
-      </h1>
+        <h1>
+          {checkoutStep === 1 && "Checkout"}
+          {checkoutStep === 2 && "Payment"}
+          {checkoutStep === 3 && "Review Order"}
+        </h1>
 
-        <div
-          className={`checkout-content ${
-            checkoutStep === 3 &&
-            orderSubmitted &&
-            completedOrder
-              ? "confirmation-mode"
-              : ""
-          }`}
-        >
+        <div className="checkout-content">
           {checkoutStep === 1 && (
             <section className="shipping-card">
             <div className="shipping-card-heading">
@@ -1140,7 +1158,7 @@ const handlePaymentBlur = (event) => {
                             "heyJacksonPayment",
                             JSON.stringify(paymentSummary)
                           );
-                          setCheckoutStep(3);
+                          navigate("/checkout/review");
 
                           window.scrollTo({
                             top: 0,
@@ -1416,7 +1434,7 @@ const handlePaymentBlur = (event) => {
                       </form>
                     </section>
                   )}
-            {checkoutStep === 3 && !orderSubmitted && (
+            {checkoutStep === 3 && (
               <section className="review-card">
                 <div className="review-card-heading">
                   <div>
@@ -1653,254 +1671,7 @@ const handlePaymentBlur = (event) => {
               </section>
             )}
 
-            {checkoutStep === 3 &&
-              orderSubmitted &&
-              completedOrder && (
-                <section className="order-confirmation-card">
-                  <div
-                    className="order-confirmation-icon"
-                    aria-hidden="true"
-                  >
-                    ✓
-                  </div>
-
-                  <p className="checkout-eyebrow">
-                    Order Submitted
-                  </p>
-
-                  <h2>Thank You for Your Order!</h2>
-
-                  <p className="confirmation-intro">
-                    Your checkout demonstration was completed
-                    successfully.
-                  </p>
-
-                  <div className="confirmation-order-meta">
-                    <div>
-                      <span>Order Number</span>
-                      <strong>{completedOrder.id}</strong>
-                    </div>
-
-                    <div>
-                      <span>Order Date</span>
-                      <strong>
-                        {completedOrder.formattedDate}
-                      </strong>
-                    </div>
-
-                    <div>
-                      <span>Estimated Delivery</span>
-                      <strong>
-                        {completedOrder.estimatedDelivery}
-                      </strong>
-                    </div>
-                  </div>
-
-                  <div className="confirmation-receipt">
-                    <div className="confirmation-section">
-                      <h3>Items Ordered</h3>
-
-                      {completedOrder.items.map((item) => {
-                        const numericPrice = Number(
-                          String(item.price).replace(
-                            /[^0-9.]/g,
-                            ""
-                          )
-                        );
-
-                        const lineTotal =
-                          numericPrice * item.quantity;
-
-                        return (
-                          <div
-                            className="confirmation-item"
-                            key={item.id}
-                          >
-                            <img
-                              src={item.image}
-                              alt={item.name}
-                            />
-
-                            <div className="confirmation-item-details">
-                              <strong>{item.name}</strong>
-
-                              {(item.color || item.size) && (
-                                <p>
-                                  {item.color}
-
-                                  {item.color &&
-                                    item.size &&
-                                    " • "}
-
-                                  {item.size}
-                                </p>
-                              )}
-
-                              <small>
-                                Quantity: {item.quantity}
-                              </small>
-                            </div>
-
-                            <strong>
-                              {formatCurrency(lineTotal)}
-                            </strong>
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    <div className="confirmation-details-grid">
-                      <div className="confirmation-section">
-                        <h3>Shipping Address</h3>
-
-                        <p>
-                          {
-                            completedOrder.shippingAddress
-                              .firstName
-                          }{" "}
-                          {
-                            completedOrder.shippingAddress
-                              .lastName
-                          }
-                        </p>
-
-                        <p>
-                          {
-                            completedOrder.shippingAddress
-                              .address
-                          }
-                        </p>
-
-                        {completedOrder.shippingAddress
-                          .apartment && (
-                          <p>
-                            {
-                              completedOrder.shippingAddress
-                                .apartment
-                            }
-                          </p>
-                        )}
-
-                        <p>
-                          {
-                            completedOrder.shippingAddress
-                              .city
-                          }
-                          ,{" "}
-                          {
-                            completedOrder.shippingAddress
-                              .state
-                          }{" "}
-                          {
-                            completedOrder.shippingAddress
-                              .zipCode
-                          }
-                        </p>
-
-                        <p>
-                          {
-                            completedOrder.shippingAddress
-                              .email
-                          }
-                        </p>
-
-                        {completedOrder.shippingAddress
-                          .phone && (
-                          <p>
-                            {
-                              completedOrder.shippingAddress
-                                .phone
-                            }
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="confirmation-section">
-                        <h3>Payment Method</h3>
-
-                        <p>
-                          {
-                            completedOrder.payment
-                              .method
-                          }
-                        </p>
-
-                        <p>
-                          Card ending in{" "}
-                          {
-                            completedOrder.payment
-                              .lastFour
-                          }
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="confirmation-totals">
-                      <div>
-                        <span>Subtotal</span>
-                        <span>
-                          {formatCurrency(
-                            completedOrder.subtotal
-                          )}
-                        </span>
-                      </div>
-
-                      <div>
-                        <span>Shipping</span>
-                        <span>
-                          {completedOrder.shipping === 0
-                            ? "Free"
-                            : formatCurrency(
-                                completedOrder.shipping
-                              )}
-                        </span>
-                      </div>
-
-                      <div>
-                        <span>Estimated Tax</span>
-                        <span>
-                          {formatCurrency(completedOrder.tax ?? completedOrder.estimatedTax)}
-                        </span>
-                      </div>
-
-                      <div className="confirmation-total-row">
-                        <strong>Total</strong>
-
-                        <strong>
-                          {formatCurrency(
-                            completedOrder.total
-                          )}
-                        </strong>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="confirmation-demo-notice">
-                    This is a demonstration receipt. No real
-                    payment was processed.
-                  </p>
-
-                  <div className="confirmation-actions">
-                    <button
-                      type="button"
-                      className="checkout-back-button"
-                      onClick={() => window.print()}
-                    >
-                      Print Receipt
-                    </button>
-
-                    <Link
-                      to="/products"
-                      className="continue-payment-button"
-                    >
-                      Continue Shopping
-                    </Link>
-                  </div>
-                </section>
-              )}
-
-            {!orderSubmitted && (
-              <aside className="checkout-summary-card">
+            <aside className="checkout-summary-card">
             {cartItems.length === 0 ? (
               <div className="summary-placeholder">
                 <p>Your cart is currently empty.</p>
@@ -2007,9 +1778,8 @@ const handlePaymentBlur = (event) => {
               <span>PayPal</span>
             </div>
           </div>
-                  </aside>
-                    )}
-      
+            </aside>
+
         </div>
       </main>
 
