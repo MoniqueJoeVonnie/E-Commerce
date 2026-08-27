@@ -9,6 +9,8 @@ import Footer from "../components/Footer";
 import { useWishlist } from "../context/WishlistContext";
 import FadeImage from "../components/FadeImage";
 import PageMeta from "../components/PageMeta";
+import { useState } from "react";
+
 
 
 
@@ -17,6 +19,73 @@ function ProductPage() {
     toggleWishlist,
     isInWishlist,
   } = useWishlist();
+
+  const [selectedCategory, setSelectedCategory] =
+    useState("all");
+
+  const [selectedSubcategory, setSelectedSubcategory] =
+    useState("all");
+
+const categories = [
+  {
+    label: "Pet Clothing",
+    value: "clothing",
+  },
+  {
+    label: "Pet Protectors",
+    value: "shoes",
+  },
+  {
+    label: "Harnesses and Leashes",
+    value: "harnesses",
+  },
+  {
+    label: "Accessories",
+    value: "accessories",
+  },
+];
+
+const clothingSubcategories = [
+  {
+    label: "All Clothing",
+    value: "all",
+  },
+  {
+    label: "Hoodies",
+    value: "hoodies",
+  },
+  {
+    label: "Tees",
+    value: "tees",
+  },
+  {
+    label: "Dresses",
+    value: "dresses",
+  },
+  {
+    label: "Matching",
+    value: "matching",
+  },
+];
+
+const filteredProducts = products.filter((product) => {
+  if (selectedCategory === "all") {
+    return true;
+  }
+
+  if (product.category !== selectedCategory) {
+    return false;
+  }
+
+  if (
+    selectedCategory === "clothing" &&
+    selectedSubcategory !== "all"
+  ) {
+    return product.subcategory === selectedSubcategory;
+  }
+
+  return true;
+});
 
     return (
       <>
@@ -39,15 +108,68 @@ function ProductPage() {
             </p>
 
             <p className="category-count">
-              {products.length}{" "}
-              {products.length === 1
+              {filteredProducts.length}{" "}
+              {filteredProducts.length === 1
                 ? "product available"
                 : "products available"}
             </p>
           </section>
 
+        <div className="product-category-filters">
+          <button
+            type="button"
+            className={
+              selectedCategory === "all"
+                ? "product-category-filter active"
+                : "product-category-filter"
+            }
+            onClick={() => setSelectedCategory("all")}
+          >
+            All Products
+          </button>
+
+          {categories.map((category) => (
+            <button
+              key={category.value}
+              type="button"
+              className={
+                selectedCategory === category.value
+                  ? "product-category-filter active"
+                  : "product-category-filter"
+              }
+              onClick={() => {
+                setSelectedCategory(category.value);
+                setSelectedSubcategory("all");
+              }}
+            >
+              {category.label}
+            </button>
+          ))}
+        </div>        
+
+        {selectedCategory === "clothing" && (
+          <div className="product-subcategory-filters">
+            {clothingSubcategories.map((subcategory) => (
+              <button
+                key={subcategory.value}
+                type="button"
+                className={
+                  selectedSubcategory === subcategory.value
+                    ? "product-subcategory-filter active"
+                    : "product-subcategory-filter"
+                }
+                onClick={() =>
+                  setSelectedSubcategory(subcategory.value)
+                }
+              >
+                {subcategory.label}
+              </button>
+            ))}
+          </div>
+        )}
+
           <div className="product-grid">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <Link
                 key={product.id}
                 to={`/products/${product.id}`}

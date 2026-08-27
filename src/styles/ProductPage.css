@@ -270,3 +270,150 @@
     font-size: 0.92rem;
   }
 }
+
+
+
+
+
+
+
+
+/* ========================================
+   PRODUCT CATEGORY FILTERS
+======================================== */
+
+.product-category-filters {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 40px;
+  padding: 0 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.product-category-filter {
+  border: 2px solid #6b2b7c;
+  background: #ffffff;
+  color: #6b2b7c;
+
+  padding: 12px 24px;
+  border-radius: 999px;
+
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.product-category-filter:hover {
+  background: #fceff7;
+  transform: translateY(-2px);
+}
+
+.product-category-filter.active {
+  background: #6b2b7c;
+  border-color: #6b2b7c;
+  color: #ffffff;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .product-category-filters {
+    gap: 10px;
+  }
+
+  .product-category-filter {
+    padding: 10px 18px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .product-category-filters {
+    padding: 0 16px;
+    margin-bottom: 28px;
+  }
+
+  .product-category-filter {
+    flex: 1 1 calc(50% - 10px);
+    text-align: center;
+    padding: 10px 12px;
+  }
+}
+
+
+
+
+
+
+/* =====================================
+   PET CLOTHING SUBCATEGORY FILTERS
+===================================== */
+
+.product-subcategory-filters {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 12px;
+
+  margin: 22px auto 30px;
+  padding: 0 20px;
+}
+
+.product-subcategory-filter {
+  border: 1.5px solid #7a2d8f;
+  background: #ffffff;
+  color: #7a2d8f;
+
+  padding: 9px 20px;
+
+  border-radius: 999px;
+
+  font-size: 0.9rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.product-subcategory-filter:hover {
+  background: #f8eef9;
+  transform: translateY(-1px);
+}
+
+.product-subcategory-filter.active {
+  background: #19aeb5;
+  border-color: #19aeb5;
+  color: #ffffff;
+}
+
+/* Smaller screens */
+@media (max-width: 700px) {
+  .product-subcategory-filters {
+    gap: 8px;
+    margin-top: 18px;
+    margin-bottom: 24px;
+  }
+
+  .product-subcategory-filter {
+    padding: 8px 14px;
+    font-size: 0.82rem;
+  }
+}

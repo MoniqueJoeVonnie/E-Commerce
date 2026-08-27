@@ -1,0 +1,71 @@
+import mommysSpiritAnimalProduct from "../../assets/Pet Product/Pet Clothing/Hoodies/mommys-spirit-animal-hoodie/mommys-spirit-animal-product.png";
+import mommysSpiritAnimalBack from "../../assets/Pet Product/Pet Clothing/Hoodies/mommys-spirit-animal-hoodie/mommys-spirit-animal-back.png";
+import mommysSpiritAnimalAerial from "../../assets/Pet Product/Pet Clothing/Hoodies/mommys-spirit-animal-hoodie/mommys-spirit-animal-aerial.png";
+import mommysSpiritAnimalFront from "../../assets/Pet Product/Pet Clothing/Hoodies/mommys-spirit-animal-hoodie/mommys-spirit-animal-front.png";
+import mommysSpiritAnimalDetail from "../../assets/Pet Product/Pet Clothing/Hoodies/mommys-spirit-animal-hoodie/mommys-spirit-animal-detail.png";
+import mommysSpiritAnimalProductCard from "../../assets/Pet Product/Pet Clothing/Hoodies/mommys-spirit-animal-hoodie/mommy-spirit-animal-hoodie-product-card-1.png";
+
+export const mommysSpiritAnimalHoodie = {
+  id: "mommys-spirit-animal-hoodie",
+  name: "Mommy's Spirit Animal Dog Hoodie",
+  category: "clothing",
+  subcategory: "hoodies",
+  price: "$54.99",
+
+  image: mommysSpiritAnimalProductCard,
+  recommendationImage: mommysSpiritAnimalProduct,
+
+  description:
+    "A playful white dog hoodie featuring Mommy’s Spirit Animal lettering and a colorful unicorn-inspired detail for a fun, cozy statement look.",
+
+  variants: [
+    {
+      id: "white",
+      name: "White",
+      swatch: "#f7f4ee",
+      thumbnail: mommysSpiritAnimalProduct,
+      gallery: [
+        mommysSpiritAnimalBack,
+        mommysSpiritAnimalAerial,
+        mommysSpiritAnimalFront,
+        mommysSpiritAnimalProduct,
+        mommysSpiritAnimalDetail,
+      ],
+    },
+  ],
+
+  sizes: ["XS", "S", "M", "L"],
+
+  details: {
+    overview:
+      "Playful, cozy, and full of personality, the Mommy’s Spirit Animal Dog Hoodie is made for pups who bring a little magic everywhere they go. This soft white hoodie features charming “Mommy’s Spirit Animal” lettering accented by a colorful dimensional unicorn detail for an extra-fun statement. Designed for comfort and easy wear, it is perfect for everyday outings, cozy days at home, photoshoots, or gifting to the proud dog mom whose pup truly is her spirit animal.",
+
+    features: [
+      "Soft and cozy white hoodie construction",
+      "Mommy’s Spirit Animal statement lettering",
+      "Colorful dimensional unicorn-inspired detail",
+      "Built-in hood for added warmth and style",
+      "Easy pullover design",
+      "Comfortable fit for everyday movement",
+      "Playful statement style for fashionable pups",
+      "Ideal for outings, lounging, photoshoots, and gifting",
+    ],
+
+    specifications: [
+      "Product Type: Dog Hoodie",
+      "Style: Playful Statement Pet Fashion",
+      "Color: White",
+      "Closure Type: Pullover",
+      "Available Sizes: XS, S, M, and L",
+      "Category: Pet Clothing",
+      "Subcategory: Hoodies",
+      "Suitable For: Everyday Wear, Photoshoots, Lounging, and Gifting",
+    ],
+  },
+
+  completeTheLook: [
+    "pet-boots",
+    "step-in-harness",
+    "waste-bag-dispenser",
+  ],
+};

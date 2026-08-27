@@ -1,37 +1,38 @@
-import sportyJerseyImage from "../../assets/Sporty jersey.png";
+import sportyJerseyProductCard from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/sporty-jersey-product-card-1.png";
 
-import jerseyRed from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/red.png";
-import jerseyPink from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/pink.png";
-import jerseyBlue from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/blue.png";
-import jerseyBlack from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/black.png";
+import jerseyRed from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/red.png";
+import jerseyPink from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/pink.png";
+import jerseyBlue from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/blue.png";
+import jerseyBlack from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/black.png";
 
-import jerseyBlackLifestyle from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/sporty-jersey-black.png";
-import jerseyBlackFront from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/sporty-jersey-black-front.png";
-import jerseyBlackBack from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/sporty-jersey-black-back.png";
-import jerseyBlackCloseUp from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/sporty-jersey-black-close-up.png";
+import jerseyBlackLifestyle from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/sporty-jersey-black.png";
+import jerseyBlackFront from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/sporty-jersey-black-front.png";
+import jerseyBlackBack from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/sporty-jersey-black-back.png";
+import jerseyBlackCloseUp from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/sporty-jersey-black-close-up.png";
 
-import jerseyBlueLifestyle from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/sporty-jersey-blue.png";
-import jerseyBlueFront from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/sporty-jersey-blue-front.png";
-import jerseyBlueBack from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/sporty-jersey-blue-back.png";
-import jerseyBlueCloseUp from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/sporty-jersey-blue-close-up.png";
+import jerseyBlueLifestyle from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/sporty-jersey-blue.png";
+import jerseyBlueFront from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/sporty-jersey-blue-front.png";
+import jerseyBlueBack from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/sporty-jersey-blue-back.png";
+import jerseyBlueCloseUp from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/sporty-jersey-blue-close-up.png";
 
-import jerseyPinkLifestyle from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/sporty-jersey-pink.png";
-import jerseyPinkFront from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/sporty-jersey-pink-front.png";
-import jerseyPinkBack from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/sporty-jersey-pink-back.png";
-import jerseyPinkCloseUp from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/sporty-jersey-pink-close-up.png";
+import jerseyPinkLifestyle from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/sporty-jersey-pink.png";
+import jerseyPinkFront from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/sporty-jersey-pink-front.png";
+import jerseyPinkBack from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/sporty-jersey-pink-back.png";
+import jerseyPinkCloseUp from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/sporty-jersey-pink-close-up.png";
 
-import jerseyRedLifestyle from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/sporty-jersey-red.png";
-import jerseyRedFront from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/sporty-jersey-red-front.png";
-import jerseyRedBack from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/sporty-jersey-red-back.png";
-import jerseyRedCloseUp from "../../assets/Pet Product/Pet Clothing/chicago-23-jersey/sporty-jersey-red-close-up.png";
+import jerseyRedLifestyle from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/sporty-jersey-red.png";
+import jerseyRedFront from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/sporty-jersey-red-front.png";
+import jerseyRedBack from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/sporty-jersey-red-back.png";
+import jerseyRedCloseUp from "../../assets/Pet Product/Pet Clothing/Tees/chicago-23-jersey/sporty-jersey-red-close-up.png";
 
 export const sportyJersey = {
   id: "sporty-jersey",
   name: "Sporty Jersey",
   category: "clothing",
-  price: "$24.99",
+  subcategory: "tees",
+  price: "$39.99",
 
-  image: sportyJerseyImage,
+  image: sportyJerseyProductCard,
   recommendationImage: jerseyBlack,
 
   description: "A sporty pet jersey made for everyday comfort and style.",
